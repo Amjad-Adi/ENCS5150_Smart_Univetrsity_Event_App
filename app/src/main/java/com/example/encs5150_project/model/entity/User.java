@@ -1,7 +1,5 @@
 package com.example.encs5150_project.model.entity;
 
-import com.example.encs5150_project.R;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public class User extends Person{
-    private Major major;
+    private UserMajor major;
     private URL profilePicturePath;
     private String phoneNumber;
     private boolean accountStatus;
@@ -18,14 +16,14 @@ public class User extends Person{
     private final Set<Favourite> favouriteSet=new HashSet<>();
     public User() {
     }
-    public User(String firstName, String secondName, String email, String password, String confirmPassword, String gender, Major major, URL profilePicturePath, String phoneNumber, boolean accountStatus) {
+    public User(String firstName, String secondName, String email, String password, String confirmPassword, String gender, UserMajor major, URL profilePicturePath, String phoneNumber, boolean accountStatus) {
         super(firstName, secondName, email, password,confirmPassword, gender);
         this.major = major;
         this.profilePicturePath = profilePicturePath;
         this.phoneNumber = phoneNumber;
         this.accountStatus = accountStatus;
     }
-    public User(long id, String firstName, String secondName, String email, String password, String gender, Major major, URL profilePicturePath, String phoneNumber, boolean accountStatus) {
+    public User(long id, String firstName, String secondName, String email, String password, String gender, UserMajor major, URL profilePicturePath, String phoneNumber, boolean accountStatus) {
         super(id, firstName, secondName, email, password, gender);
         this.major = major;
         this.profilePicturePath = profilePicturePath;
@@ -33,11 +31,11 @@ public class User extends Person{
         this.accountStatus = accountStatus;
     }
 
-    public Major getMajor() {
+    public UserMajor getMajor() {
         return major;
     }
 
-    public void setMajor(Major major) {
+    public void setMajor(UserMajor major) {
         this.major = major;
     }
 

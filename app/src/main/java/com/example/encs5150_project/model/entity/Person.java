@@ -1,7 +1,5 @@
 package com.example.encs5150_project.model.entity;
 
-import java.util.List;
-
 public abstract class Person{
     private long id;
     private String firstName;

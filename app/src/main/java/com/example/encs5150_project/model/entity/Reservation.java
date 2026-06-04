@@ -12,27 +12,25 @@ public class Reservation {
     private ReservationStatus reservationStatus;
     private String reservationAdditionalInfo;
 
-    private LocalDate reservationDate;
-    private double rating;
-    private String review;
-
+    private final LocalDate reservationDate;
+    private Review review;
     public Reservation() {
+        reservationDate=LocalDate.now();
     }
-    public Reservation(User user, Event event, ReservationType reservationType, int participationCount, ReservationStatus reservationStatus, String reservationAdditionalInfo, LocalDate reservationDate, double rating, String review) {
+    public Reservation(User user, Event event, ReservationType reservationType, int participationCount, ReservationStatus reservationStatus, String reservationAdditionalInfo,Review review) {
         this.user = user;
         this.event = event;
         this.reservationType = reservationType;
         this.participationCount = participationCount;
         this.reservationStatus = reservationStatus;
         this.reservationAdditionalInfo = reservationAdditionalInfo;
-        this.reservationDate = reservationDate;
-        this.rating = rating;
-        this.review = review;
+        this.reservationDate = LocalDate.now();
+        this.review=review;
         if(!user.addReservation(this))
                 throw new IllegalArgumentException("The user with id: "+user.getId()+" has been added before");
         event.addReservation(this);
     }
-    public Reservation(long id,User user, Event event, ReservationType reservationType, int participationCount, ReservationStatus reservationStatus, String reservationAdditionalInfo, LocalDate reservationDate, double rating, String review) {
+    public Reservation(long id,User user, Event event, ReservationType reservationType, int participationCount, ReservationStatus reservationStatus, String reservationAdditionalInfo,Review review) {
         this.id=id;
         this.user = user;
         this.event = event;
@@ -40,9 +38,8 @@ public class Reservation {
         this.participationCount = participationCount;
         this.reservationStatus = reservationStatus;
         this.reservationAdditionalInfo = reservationAdditionalInfo;
-        this.reservationDate = reservationDate;
-        this.rating = rating;
-        this.review = review;
+        this.reservationDate = LocalDate.now();
+        this.review=review;
         if(!user.addReservation(this))
             throw new IllegalArgumentException("The user with id: "+user.getId()+" has been added before");
         event.addReservation(this);
@@ -91,6 +88,10 @@ public class Reservation {
         this.reservationStatus = reservationStatus;
     }
 
+    public LocalDate getReservationDate() {
+        return reservationDate;
+    }
+
     public String getReservationAdditionalInfo() {
         return reservationAdditionalInfo;
     }
@@ -99,27 +100,11 @@ public class Reservation {
         this.reservationAdditionalInfo = reservationAdditionalInfo;
     }
 
-    public LocalDate getReservationDate() {
-        return reservationDate;
-    }
-
-    public void setReservationDate(LocalDate reservationDate) {
-        this.reservationDate = reservationDate;
-    }
-
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
-    public String getReview() {
+    public Review getReview() {
         return review;
     }
 
-    public void setReview(String review) {
+    public void setReview(Review review) {
         this.review = review;
     }
 }

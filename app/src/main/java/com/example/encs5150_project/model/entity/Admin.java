@@ -1,7 +1,5 @@
 package com.example.encs5150_project.model.entity;
 
-import java.util.List;
-
 public class Admin extends Person{
     private double salary;
     private boolean accountStatus;

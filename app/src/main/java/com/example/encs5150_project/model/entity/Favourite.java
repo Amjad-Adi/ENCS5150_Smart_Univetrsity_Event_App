@@ -3,22 +3,24 @@ package com.example.encs5150_project.model.entity;
 import java.time.LocalDate;
 
 public class Favourite {
-    private Person person;
+    private User user;
     private Event event;
-    private LocalDate favoriteDate;
-
-    public Favourite(Person person, Event event, LocalDate favoriteDate) {
-        this.person = person;
+    private final LocalDate favoriteDate;
+    public Favourite() {
+        favoriteDate=LocalDate.now();
+    }
+    public Favourite(User user, Event event) {
+        this.user = user;
         this.event = event;
-        this.favoriteDate = favoriteDate;
+        this.favoriteDate = LocalDate.now();
     }
 
-    public Person getPerson() {
-        return person;
+    public User getUser() {
+        return user;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setPerson(User user) {
+        this.user = user;
     }
 
     public Event getEvent() {
@@ -33,20 +35,17 @@ public class Favourite {
         return favoriteDate;
     }
 
-    public void setFavoriteDate(LocalDate favoriteDate) {
-        this.favoriteDate = favoriteDate;
-    }
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
         if (!(o instanceof Favourite))
             return false;
-        return person==((Favourite) o).person&& event==((Favourite) o).event;
+        return user==((Favourite) o).user&& event==((Favourite) o).event;
     }
 
     @Override
     public int hashCode() {
-        return System.identityHashCode(person)*31+System.identityHashCode(event);
+        return System.identityHashCode(user)*31+System.identityHashCode(event);
     }
 }
