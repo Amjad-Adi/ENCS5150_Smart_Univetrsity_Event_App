@@ -20,8 +20,10 @@ import com.example.encs5150_project.model.repository.database.contracts.UserCont
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     private static DataBaseHelper instance;
-    private DataBaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context.getApplicationContext(), name, factory, version);
+    private static final String DATABASE_NAME = "smart_university_events.db";
+    private static final int DATABASE_VERSION = 1;
+    private DataBaseHelper(@Nullable Context context) {
+        super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
     }
     @Override
     public void onConfigure(SQLiteDatabase db) {
@@ -43,9 +45,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-    public static DataBaseHelper getInstance(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version){
+    public static DataBaseHelper getInstance(@Nullable Context context){
         if(instance==null)
-            instance=new DataBaseHelper(context, name, factory, version);
+            instance=new DataBaseHelper(context);
         return instance;
     }
     private void createEventTableSQL(SQLiteDatabase db){
