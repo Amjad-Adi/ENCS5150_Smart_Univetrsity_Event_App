@@ -1,18 +1,19 @@
 package com.example.encs5150_project.model.entity;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class Favourite {
     private User user;
     private Event event;
-    private final LocalDate favoriteDate;
+    private final OffsetDateTime favoriteDate;
     public Favourite() {
-        favoriteDate=LocalDate.now();
+        favoriteDate=OffsetDateTime.now();
     }
     public Favourite(User user, Event event) {
         this.user = user;
         this.event = event;
-        this.favoriteDate = LocalDate.now();
+        this.favoriteDate = OffsetDateTime.now();
     }
 
     public User getUser() {
@@ -31,7 +32,7 @@ public class Favourite {
         this.event = event;
     }
 
-    public LocalDate getFavoriteDate() {
+    public OffsetDateTime getFavoriteDate() {
         return favoriteDate;
     }
 

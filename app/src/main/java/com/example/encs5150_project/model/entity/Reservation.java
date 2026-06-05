@@ -1,21 +1,19 @@
 package com.example.encs5150_project.model.entity;
 
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class Reservation {
     private long id;
     private User user;
     private Event event;
     private  ReservationType reservationType;
-
     private int participationCount;
     private ReservationStatus reservationStatus;
     private String reservationAdditionalInfo;
-
-    private final LocalDate reservationDate;
+    private final OffsetDateTime reservationDate;
     private Review review;
     public Reservation() {
-        reservationDate=LocalDate.now();
+        reservationDate=OffsetDateTime.now();
     }
     public Reservation(User user, Event event, ReservationType reservationType, int participationCount, ReservationStatus reservationStatus, String reservationAdditionalInfo,Review review) {
         this.user = user;
@@ -24,7 +22,7 @@ public class Reservation {
         this.participationCount = participationCount;
         this.reservationStatus = reservationStatus;
         this.reservationAdditionalInfo = reservationAdditionalInfo;
-        this.reservationDate = LocalDate.now();
+        this.reservationDate = OffsetDateTime.now();
         this.review=review;
         if(!user.addReservation(this))
                 throw new IllegalArgumentException("The user with id: "+user.getId()+" has been added before");
@@ -38,7 +36,7 @@ public class Reservation {
         this.participationCount = participationCount;
         this.reservationStatus = reservationStatus;
         this.reservationAdditionalInfo = reservationAdditionalInfo;
-        this.reservationDate = LocalDate.now();
+        this.reservationDate = OffsetDateTime.now();
         this.review=review;
         if(!user.addReservation(this))
             throw new IllegalArgumentException("The user with id: "+user.getId()+" has been added before");
@@ -88,7 +86,7 @@ public class Reservation {
         this.reservationStatus = reservationStatus;
     }
 
-    public LocalDate getReservationDate() {
+    public OffsetDateTime getReservationDate() {
         return reservationDate;
     }
 

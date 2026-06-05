@@ -16,12 +16,12 @@ public class Event {
     private LocalTime time;
     private String location;
     private int totalSeats;
-    private URL imagePath;
+    private String imagePath;
     private final List<Reservation> reservationList=new ArrayList<>();
 
     public Event() {
     }
-    public Event(String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats, URL imagePath) {
+    public Event(String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats, String imagePath) {
         this.title = title;
         this.description=description;
         this.category = category;
@@ -31,7 +31,7 @@ public class Event {
         this.totalSeats = totalSeats;
         this.imagePath = imagePath;
     }
-    public Event(long id, String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats, URL imagePath) {
+    public Event(long id, String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats, String imagePath) {
         this.id = id;
         this.title = title;
         this.description=description;
@@ -54,6 +54,14 @@ public class Event {
     public void setTitle(String title) {
         this.title = title;
     }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 
     public String getCategory() {
         return category;
@@ -95,11 +103,11 @@ public class Event {
         this.totalSeats = totalSeats;
     }
 
-    public URL getImagePath() {
+    public String getImagePath() {
         return imagePath;
     }
 
-    public void setImagePath(URL imagePath) {
+    public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
     public void addReservation(Reservation reservation) {

@@ -1,20 +1,21 @@
 package com.example.encs5150_project.model.entity;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public class Review {
     public Reservation reservation;
     private double rating;
     private String text;
-    private final LocalDate reviewDate;
+    private final OffsetDateTime reviewDate;
     public Review() {
-        reviewDate=LocalDate.now();
+        reviewDate=OffsetDateTime.now();
     }
     public Review(Reservation reservation, double rating, String text) {
         this.reservation = reservation;
         this.rating = rating;
         this.text = text;
-        this.reviewDate = LocalDate.now();
+        this.reviewDate = OffsetDateTime.now();
     }
 
     public Reservation getReservation() {
@@ -41,7 +42,7 @@ public class Review {
         this.text = text;
     }
 
-    public LocalDate getReviewDate() {
+    public OffsetDateTime getReviewDate() {
         return reviewDate;
     }
 }
