@@ -17,11 +17,8 @@ public class Event {
     private String location;
     private int totalSeats;
     private String imagePath;
-    private final List<Reservation> reservationList=new ArrayList<>();
-
-    public Event() {
-    }
-    public Event(String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats, String imagePath) {
+    private EntityStatus status;
+    public Event( String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats, String imagePath,EntityStatus status) {
         this.title = title;
         this.description=description;
         this.category = category;
@@ -30,8 +27,9 @@ public class Event {
         this.location = location;
         this.totalSeats = totalSeats;
         this.imagePath = imagePath;
+        this.status=status;
     }
-    public Event(long id, String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats, String imagePath) {
+    public Event(long id, String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats, String imagePath,EntityStatus status) {
         this.id = id;
         this.title = title;
         this.description=description;
@@ -41,6 +39,7 @@ public class Event {
         this.location = location;
         this.totalSeats = totalSeats;
         this.imagePath = imagePath;
+        this.status=status;
     }
 
     public long getId() {
@@ -100,6 +99,8 @@ public class Event {
     }
 
     public void setTotalSeats(int totalSeats) {
+        if(totalSeats<=0)
+            throw new IllegalArgumentException("Total seats must be positive");
         this.totalSeats = totalSeats;
     }
 
@@ -110,15 +111,12 @@ public class Event {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
-    public void addReservation(Reservation reservation) {
-        reservationList.add(reservation);
+
+    public EntityStatus getStatus() {
+        return status;
     }
 
-    public void removeReservation(Reservation reservation) {
-        reservationList.remove(reservation);
+    public void setStatus(EntityStatus status) {
+        this.status = status;
     }
-    public List<Reservation> getReservationList() {
-        return Collections.unmodifiableList(reservationList);
-    }
-
 }

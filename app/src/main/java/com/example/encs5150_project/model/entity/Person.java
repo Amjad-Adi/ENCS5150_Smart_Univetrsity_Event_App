@@ -6,7 +6,7 @@ public abstract class Person{
     private String lastName;
     private String email;
     private String password;
-    private String gender;
+    private PersonGender gender;
     private static final int NAME_MIN_NUMBER_OF_CHARACTERS=3;
     private static final int PASSWORD_MIN_NUMBER_OF_CHARACTERS=6;
     private static final int PASSWORD_MIN_NUMBER_OF_LETTERS=1;
@@ -14,14 +14,14 @@ public abstract class Person{
     public Person() {
     }
 
-    public Person(String firstName, String lastName, String email, String password, String confirmPassword,String gender) {
+    public Person(String firstName, String lastName, String email, String password, String confirmPassword,PersonGender gender) {
         setFirstName(firstName);
         setLastName(lastName);
         setEmail(email);
         setPassword(password,confirmPassword);
         this.gender = gender;
     }
-    public Person(long id,String firstName, String lastName, String email, String password, String gender) {
+    public Person(long id,String firstName, String lastName, String email, String password, PersonGender gender) {
         this.id=id;
         setFirstName(firstName);
         setLastName(lastName);
@@ -29,6 +29,11 @@ public abstract class Person{
         setPassword(password);
         this.gender = gender;
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }
@@ -90,14 +95,14 @@ public abstract class Person{
         if(!containsLetter)
             throw new IllegalArgumentException("Invalid password, it should contain at minimum "+PASSWORD_MIN_NUMBER_OF_LETTERS+" letter"+((PASSWORD_MIN_NUMBER_OF_LETTERS==1)?"":"s"));
         if(!containsDigit)
-            throw new IllegalArgumentException("Invalid password, it should contain at minimum "+PASSWORD_MIN_NUMBER_OF_DIGITS+" Digit"+((PASSWORD_MIN_NUMBER_OF_LETTERS==1)?"":"s"));
+            throw new IllegalArgumentException("Invalid password, it should contain at minimum "+PASSWORD_MIN_NUMBER_OF_DIGITS+" digit"+((PASSWORD_MIN_NUMBER_OF_DIGITS==1)?"":"s"));
     }
 
-    public String getGender() {
+    public PersonGender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(PersonGender gender) {
         this.gender = gender;
     }
 

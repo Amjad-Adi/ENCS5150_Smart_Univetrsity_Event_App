@@ -63,7 +63,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 .append(EventContract.COLUMN_LOCATION).append(" TEXT NOT NULL, ")
                 .append(EventContract.COLUMN_TOTAL_SEATS).append(" INTEGER NOT NULL CHECK(").append(EventContract.COLUMN_TOTAL_SEATS).append(" > 0), ")
                 .append(EventContract.COLUMN_IMAGE_PATH).append(" TEXT DEFAULT '").append(EventContract.DEFAULT_IMAGE_PATH).append("', ")
-                .append(EventContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED).append("' CHECK(").append(EventContract.COLUMN_STATUS).append(" IN ('").append(EntityStatus.ENABLED).append("', '").append(EntityStatus.DISABLED).append("')))").toString());
+                .append(EventContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED.name()).append("' CHECK(").append(EventContract.COLUMN_STATUS).append(" IN ('").append(EntityStatus.ENABLED.name()).append("', '").append(EntityStatus.DISABLED.name()).append("')))").toString());
     }
     private void createPersonTableSQL(SQLiteDatabase db){
         StringBuilder sqlStringBuilder=new StringBuilder();
@@ -74,17 +74,17 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 .append(PersonContract.COLUMN_LAST_NAME).append(" TEXT NOT NULL, ")
                 .append(PersonContract.COLUMN_EMAIL).append(" TEXT NOT NULL UNIQUE, ")
                 .append(PersonContract.COLUMN_PASSWORD).append(" TEXT NOT NULL, ")
-                .append(PersonContract.COLUMN_GENDER).append(" TEXT NOT NULL CHECK(").append(PersonContract.COLUMN_GENDER).append(" IN ('").append(PersonGender.Male).append("', '").append(PersonGender.Female).append("')))").toString());
+                .append(PersonContract.COLUMN_GENDER).append(" TEXT NOT NULL CHECK(").append(PersonContract.COLUMN_GENDER).append(" IN ('").append(PersonGender.Male.name()).append("', '").append(PersonGender.Female.name()).append("')))").toString());
     }
     private void createUserTableSQL(SQLiteDatabase db){
         StringBuilder sqlStringBuilder=new StringBuilder();
         db.execSQL(
                 sqlStringBuilder.append("CREATE TABLE ").append(UserContract.TABLE_NAME).append(" ( ")
                 .append(UserContract.COLUMN_ID).append(" INTEGER PRIMARY KEY, ")
-                .append(UserContract.COLUMN_MAJOR).append(" TEXT DEFAULT '").append(UserContract.DEFAULT_MAJOR).append("' CHECK(").append(UserContract.COLUMN_MAJOR).append(" IN ('").append(UserMajor.ENGINEERING).append("', '").append(UserMajor.BUSINESS).append("', '").append(UserMajor.MEDICAL_FIELDS).append("', '").append(UserMajor.HUMANITIES).append("', '").append(UserMajor.SCIENCES).append("', '").append(UserMajor.LAW_AND_POLITICS).append("', '").append(UserMajor.ARTS_AND_DESIGN).append("', '").append(UserMajor.COMPUTING).append("', '").append(UserMajor.EDUCATION).append("', '").append(UserMajor.MEDIA_AND_COMMUNICATION).append("', '").append(UserMajor.OTHER).append("')), ")
+                .append(UserContract.COLUMN_MAJOR).append(" TEXT DEFAULT '").append(UserContract.DEFAULT_MAJOR).append("' CHECK(").append(UserContract.COLUMN_MAJOR).append(" IN ('").append(UserMajor.ENGINEERING.name()).append("', '").append(UserMajor.BUSINESS.name()).append("', '").append(UserMajor.MEDICAL_FIELDS.name()).append("', '").append(UserMajor.HUMANITIES.name()).append("', '").append(UserMajor.SCIENCES.name()).append("', '").append(UserMajor.LAW_AND_POLITICS.name()).append("', '").append(UserMajor.ARTS_AND_DESIGN.name()).append("', '").append(UserMajor.COMPUTING.name()).append("', '").append(UserMajor.EDUCATION.name()).append("', '").append(UserMajor.MEDIA_AND_COMMUNICATION.name()).append("', '").append(UserMajor.OTHER.name()).append("')), ")
                 .append(UserContract.COLUMN_PHONE_NUMBER).append(" TEXT NOT NULL UNIQUE, ")
                 .append(UserContract.COLUMN_PROFILE_PICTURE_PATH).append(" TEXT DEFAULT '").append(UserContract.DEFAULT_PROFILE_PICTURE_PATH).append("', ")
-                .append(UserContract.COLUMN_ACCOUNT_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED).append("' CHECK(").append(UserContract.COLUMN_ACCOUNT_STATUS).append(" IN ('").append(EntityStatus.ENABLED).append("', '").append(EntityStatus.DISABLED).append("')), ")
+                .append(UserContract.COLUMN_ACCOUNT_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED.name()).append("' CHECK(").append(UserContract.COLUMN_ACCOUNT_STATUS).append(" IN ('").append(EntityStatus.ENABLED.name()).append("', '").append(EntityStatus.DISABLED.name()).append("')), ")
                 .append("FOREIGN KEY (").append(UserContract.COLUMN_ID).append(") REFERENCES ").append(PersonContract.TABLE_NAME).append("(").append(PersonContract.COLUMN_ID).append(") ON DELETE CASCADE ON UPDATE CASCADE)").toString());
     }
     private void createAdminTableSQL(SQLiteDatabase db){
@@ -93,7 +93,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 sqlStringBuilder.append("CREATE TABLE ").append(AdminContract.TABLE_NAME).append(" ( ")
                 .append(AdminContract.COLUMN_ID).append(" INTEGER PRIMARY KEY, ")
                 .append(AdminContract.COLUMN_SALARY).append(" REAL DEFAULT ").append(AdminContract.DEFAULT_SALARY).append(" CHECK(").append(AdminContract.COLUMN_SALARY).append(" > 0), ")
-                .append(AdminContract.COLUMN_ACCOUNT_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED).append("' CHECK(").append(AdminContract.COLUMN_ACCOUNT_STATUS).append(" IN ('").append(EntityStatus.ENABLED).append("', '").append(EntityStatus.DISABLED).append("')), ")
+                .append(AdminContract.COLUMN_ACCOUNT_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED.name()).append("' CHECK(").append(AdminContract.COLUMN_ACCOUNT_STATUS).append(" IN ('").append(EntityStatus.ENABLED.name()).append("', '").append(EntityStatus.DISABLED.name()).append("')), ")
                 .append("FOREIGN KEY (").append(AdminContract.COLUMN_ID).append(") REFERENCES ").append(PersonContract.TABLE_NAME).append("(").append(PersonContract.COLUMN_ID).append(") ON DELETE CASCADE ON UPDATE CASCADE)").toString());
     }
     private void createReservationTableSQL(SQLiteDatabase db){
@@ -106,8 +106,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 .append(ReservationContract.COLUMN_DATE).append(" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, ")
                 .append(ReservationContract.COLUMN_PARTICIPATION_COUNT).append(" INTEGER NOT NULL DEFAULT ").append(ReservationContract.DEFAULT_PARTICIPATION_COUNT).append(" CHECK(").append(ReservationContract.COLUMN_PARTICIPATION_COUNT).append(" > 0), ")
                 .append(ReservationContract.COLUMN_ADDITIONAL_INFO).append(" TEXT DEFAULT '").append(ReservationContract.DEFAULT_ADDITIONAL_INFO).append("', ")
-                .append(ReservationContract.COLUMN_TYPE).append(" TEXT NOT NULL DEFAULT '").append(ReservationType.REGULAR).append("' CHECK(").append(ReservationContract.COLUMN_TYPE).append(" IN ('").append(ReservationType.REGULAR).append("', '").append(ReservationType.VIP).append("')), ")
-                .append(ReservationContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(ReservationStatus.CONFIRMED).append("' CHECK(").append(ReservationContract.COLUMN_STATUS).append(" IN ('").append(ReservationStatus.CONFIRMED).append("', '").append(ReservationStatus.CANCELED_BY_ADMIN).append("', '").append(ReservationStatus.DELETED_BY_USER).append("', '").append(ReservationStatus.COMPLETED).append("')), ")
+                .append(ReservationContract.COLUMN_TYPE).append(" TEXT NOT NULL DEFAULT '").append(ReservationType.REGULAR).append("' CHECK(").append(ReservationContract.COLUMN_TYPE).append(" IN ('").append(ReservationType.REGULAR.name()).append("', '").append(ReservationType.VIP.name()).append("')), ")
+                .append(ReservationContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(ReservationStatus.CONFIRMED).append("' CHECK(").append(ReservationContract.COLUMN_STATUS).append(" IN ('").append(ReservationStatus.CONFIRMED.name()).append("', '").append(ReservationStatus.CANCELED_BY_ADMIN.name()).append("', '").append(ReservationStatus.DELETED_BY_USER.name()).append("', '").append(ReservationStatus.COMPLETED.name()).append("')), ")
                 .append("FOREIGN KEY (").append(ReservationContract.COLUMN_EVENT_ID).append(") REFERENCES ").append(EventContract.TABLE_NAME).append("(").append(EventContract.COLUMN_ID).append(") ON DELETE CASCADE ON UPDATE CASCADE, ")
                 .append("FOREIGN KEY (").append(ReservationContract.COLUMN_USER_ID).append(") REFERENCES ").append(UserContract.TABLE_NAME).append("(").append(UserContract.COLUMN_ID).append(") ON UPDATE CASCADE, ")
                 .append("UNIQUE (").append(ReservationContract.COLUMN_USER_ID).append(", ").append(ReservationContract.COLUMN_EVENT_ID).append("))").toString());
@@ -131,7 +131,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 .append(ReviewContract.COLUMN_RATING).append(" REAL NOT NULL CHECK(").append(ReviewContract.COLUMN_RATING).append(" BETWEEN 1 AND 5), ")
                 .append(ReviewContract.COLUMN_TEXT).append(" TEXT, ")
                 .append(ReviewContract.COLUMN_DATE).append(" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, ")
-                .append(ReviewContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED).append("' CHECK(").append(ReviewContract.COLUMN_STATUS).append(" IN ('").append(EntityStatus.ENABLED).append("', '").append(EntityStatus.DISABLED).append("')), ")
+                .append(ReviewContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED.name()).append("' CHECK(").append(ReviewContract.COLUMN_STATUS).append(" IN ('").append(EntityStatus.ENABLED.name()).append("', '").append(EntityStatus.DISABLED.name()).append("')), ")
                 .append("FOREIGN KEY (").append(ReviewContract.COLUMN_RESERVATION_ID).append(") REFERENCES ").append(ReservationContract.TABLE_NAME).append("(").append(ReservationContract.COLUMN_ID).append(")  ON DELETE CASCADE ON UPDATE CASCADE)").toString());
     }
 }

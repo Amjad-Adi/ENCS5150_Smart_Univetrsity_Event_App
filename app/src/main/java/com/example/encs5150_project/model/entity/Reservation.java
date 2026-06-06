@@ -4,64 +4,46 @@ import java.time.OffsetDateTime;
 
 public class Reservation {
     private long id;
-    private User user;
-    private Event event;
+    private final long userId;
+    private final long eventId;
     private  ReservationType reservationType;
     private int participationCount;
     private ReservationStatus reservationStatus;
     private String reservationAdditionalInfo;
     private final OffsetDateTime reservationDate;
-    private Review review;
-    public Reservation() {
-        reservationDate=OffsetDateTime.now();
-    }
-    public Reservation(User user, Event event, ReservationType reservationType, int participationCount, ReservationStatus reservationStatus, String reservationAdditionalInfo,Review review) {
-        this.user = user;
-        this.event = event;
+    public Reservation(long userId, long eventId, ReservationType reservationType, int participationCount, ReservationStatus reservationStatus, String reservationAdditionalInfo,OffsetDateTime reservationDate) {
+        this.userId = userId;
+        this.eventId = eventId;
         this.reservationType = reservationType;
-        this.participationCount = participationCount;
+        setParticipationCount(participationCount);
         this.reservationStatus = reservationStatus;
         this.reservationAdditionalInfo = reservationAdditionalInfo;
-        this.reservationDate = OffsetDateTime.now();
-        this.review=review;
-        if(!user.addReservation(this))
-                throw new IllegalArgumentException("The user with id: "+user.getId()+" has been added before");
-        event.addReservation(this);
+        this.reservationDate = reservationDate;
     }
-    public Reservation(long id,User user, Event event, ReservationType reservationType, int participationCount, ReservationStatus reservationStatus, String reservationAdditionalInfo,Review review) {
+    public Reservation(long id,long userId, long eventId, ReservationType reservationType, int participationCount, ReservationStatus reservationStatus, String reservationAdditionalInfo,OffsetDateTime reservationDate) {
         this.id=id;
-        this.user = user;
-        this.event = event;
+        this.userId = userId;
+        this.eventId = eventId;
         this.reservationType = reservationType;
-        this.participationCount = participationCount;
+        setParticipationCount(participationCount);
         this.reservationStatus = reservationStatus;
         this.reservationAdditionalInfo = reservationAdditionalInfo;
-        this.reservationDate = OffsetDateTime.now();
-        this.review=review;
-        if(!user.addReservation(this))
-            throw new IllegalArgumentException("The user with id: "+user.getId()+" has been added before");
-        event.addReservation(this);
+        this.reservationDate = reservationDate;
     }
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }
-
-    public User getUser() {
-        return user;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public long getEventId() {
+        return eventId;
     }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
     public ReservationType getReservationType() {
         return reservationType;
     }
@@ -75,6 +57,8 @@ public class Reservation {
     }
 
     public void setParticipationCount(int participationCount) {
+        if (participationCount<=0)
+            throw new IllegalArgumentException("Participation count must be positive");
         this.participationCount = participationCount;
     }
 
@@ -96,13 +80,5 @@ public class Reservation {
 
     public void setReservationAdditionalInfo(String reservationAdditionalInfo) {
         this.reservationAdditionalInfo = reservationAdditionalInfo;
-    }
-
-    public Review getReview() {
-        return review;
-    }
-
-    public void setReview(Review review) {
-        this.review = review;
     }
 }

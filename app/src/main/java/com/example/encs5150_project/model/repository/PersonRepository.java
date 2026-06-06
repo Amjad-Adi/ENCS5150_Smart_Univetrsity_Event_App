@@ -1,39 +1,47 @@
 package com.example.encs5150_project.model.repository;
 
-import com.example.encs5150_project.model.entity.Person;
-import com.example.encs5150_project.model.repository.database.DataBaseHelper;
-import com.example.encs5150_project.model.repository.database.CrudRepository;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
+import com.example.encs5150_project.model.entity.Person;
+import com.example.encs5150_project.model.entity.PersonGender;
+import com.example.encs5150_project.model.repository.database.DataBaseHelper;
+import com.example.encs5150_project.model.repository.database.contracts.PersonContract;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PersonRepository implements CrudRepository<Person> {
+public class PersonRepository {
     private final DataBaseHelper dataBaseHelper;
     public PersonRepository(DataBaseHelper dataBaseHelper){
         this.dataBaseHelper=dataBaseHelper;
     }
-    @Override
-    public boolean save(Person entity) {
-        return false;
+    public void insert(SQLiteDatabase db,Person person) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(PersonContract.COLUMN_FIRST_NAME, person.getFirstName());
+        contentValues.put(PersonContract.COLUMN_LAST_NAME, person.getLastName());
+        contentValues.put(PersonContract.COLUMN_EMAIL, person.getEmail());
+        contentValues.put(PersonContract.COLUMN_PASSWORD, person.getPassword());
+        contentValues.put(PersonContract.COLUMN_GENDER, person.getGender().name());
+        long generatedId = db.insert(
+                PersonContract.TABLE_NAME, null, contentValues);
+        if (generatedId==-1)
+            throw new RuntimeException("Failed to insert person into SQLite.");
+        person.setId(generatedId);
     }
 
-    @Override
-    public void update(Person entity) {
-
+    public void update(SQLiteDatabase db,Person person) {
+        ContentValues contentValues=new ContentValues();
+        contentValues.put(PersonContract.COLUMN_FIRST_NAME, person.getFirstName());
+        contentValues.put(PersonContract.COLUMN_LAST_NAME, person.getLastName());
+        contentValues.put(PersonContract.COLUMN_EMAIL, person.getEmail());
+        contentValues.put(PersonContract.COLUMN_PASSWORD, person.getPassword());
+        contentValues.put(PersonContract.COLUMN_GENDER, person.getGender().name());
+        if (db.update(PersonContract.TABLE_NAME,contentValues,PersonContract.COLUMN_ID+" = ?",new String[]{String.valueOf(person.getId())})==0)
+            throw new RuntimeException("No person found with id " + person.getId());
     }
 
-    @Override
-    public Person findById(long id) {
-        return null;
-    }
 
-    @Override
-    public List<Person> findAll() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public void delete(long id) {
-
-    }
 }

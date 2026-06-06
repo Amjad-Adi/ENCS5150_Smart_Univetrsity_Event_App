@@ -24,4 +24,32 @@ public final class RepositoryManager {
         reviewRepository = new ReviewRepository(dataBaseHelper);
         favouriteRepository = new FavouriteRepository(dataBaseHelper);
     }
+
+    public EventRepository getEventRepository() {
+        return eventRepository;
+    }
+
+    public PersonRepository getPersonRepository() {
+        return personRepository;
+    }
+
+    public ReservationRepository getReservationRepository() {
+        return reservationRepository;
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
+    public AdminRepository getAdminRepository() {
+        return adminRepository;
+    }
+
+    public ReviewRepository getReviewRepository() {
+        return reviewRepository;
+    }
+
+    public FavouriteRepository getFavouriteRepository() {
+        return favouriteRepository;
+    }
 }

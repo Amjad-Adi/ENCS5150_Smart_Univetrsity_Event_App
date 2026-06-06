@@ -2,18 +2,18 @@ package com.example.encs5150_project.model.entity;
 
 public class Admin extends Person{
     private double salary;
-    private boolean accountStatus;
+    private EntityStatus accountStatus;
 
     public Admin() {
     }
-    public Admin(String firstName, String secondName, String email, String password, String confirmPassword,String gender, double salary, boolean accountStatus) {
+    public Admin(String firstName, String secondName, String email, String password, String confirmPassword,String gender, double salary, EntityStatus accountStatus) {
         super( firstName, secondName, email, password, confirmPassword,gender);
-        this.salary = salary;
+        setSalary(salary);
         this.accountStatus = accountStatus;
     }
-    public Admin(long id, String firstName, String secondName, String email, String password, String gender, double salary, boolean accountStatus) {
+    public Admin(long id, String firstName, String secondName, String email, String password, String gender, double salary, EntityStatus accountStatus) {
         super(id, firstName, secondName, email, password, gender);
-        this.salary = salary;
+        setSalary(salary);
         this.accountStatus = accountStatus;
     }
 
@@ -22,14 +22,16 @@ public class Admin extends Person{
     }
 
     public void setSalary(double salary) {
+        if(salary<0)
+            throw new IllegalArgumentException("Salary must be positive");
         this.salary = salary;
     }
 
-    public boolean isAccountStatus() {
+    public EntityStatus getAccountStatus() {
         return accountStatus;
     }
 
-    public void setAccountStatus(boolean accountStatus) {
+    public void setAccountStatus(EntityStatus accountStatus) {
         this.accountStatus = accountStatus;
     }
 }
