@@ -15,8 +15,7 @@ public class PersonRepository {
         contentValues.put(PersonContract.COLUMN_EMAIL, person.getEmail());
         contentValues.put(PersonContract.COLUMN_PASSWORD, person.getPassword());
         contentValues.put(PersonContract.COLUMN_GENDER, person.getGender().name());
-        long generatedId = db.insert(
-                PersonContract.TABLE_NAME, null, contentValues);
+        long generatedId = db.insert(PersonContract.TABLE_NAME, null, contentValues);
         if (generatedId==-1)
             throw new RuntimeException("Failed to insert person into SQLite.");
         person.setId(generatedId);
