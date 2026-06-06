@@ -4,11 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.encs5150_project.model.entity.Admin;
-import com.example.encs5150_project.model.entity.EntityStatus;
+import com.example.encs5150_project.model.entity.*;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
-import com.example.encs5150_project.model.repository.database.contracts.AdminContract;
-import com.example.encs5150_project.model.repository.database.contracts.PersonContract;
+import com.example.encs5150_project.model.repository.database.contracts.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.encs5150_project.model.entity.EntityStatus;
+import com.example.encs5150_project.model.entity.PersonGender;
 import com.example.encs5150_project.model.entity.User;
 import com.example.encs5150_project.model.entity.UserMajor;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
@@ -26,7 +27,7 @@ public class UserRepository {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         db.beginTransaction();
         try {
-            PersonRepository personRepository=new PersonRepository(dataBaseHelper);
+            PersonRepository personRepository=new PersonRepository();
             personRepository.insert(db,user);
             ContentValues contentValues = new ContentValues();
             contentValues.put(UserContract.COLUMN_ID, user.getId());
@@ -74,7 +75,7 @@ public class UserRepository {
         try{
             if(!cursor.moveToFirst())
                 return null;
-            return new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER)), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PROFILE_PICTURE_PATH)), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS))));
+            return new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PROFILE_PICTURE_PATH)), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS))));
         }finally {
             cursor.close();
         }
@@ -89,7 +90,7 @@ public class UserRepository {
         List<User>userList=new ArrayList<>();
         try {
             while(cursor.moveToNext())
-                userList.add(new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER)), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PROFILE_PICTURE_PATH)), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS)))));
+                userList.add(new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)),PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PROFILE_PICTURE_PATH)), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS)))));
             return userList;
         } finally {
             cursor.close();

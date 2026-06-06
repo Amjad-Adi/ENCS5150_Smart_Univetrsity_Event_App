@@ -1,6 +1,5 @@
 package com.example.encs5150_project.model.entity;
 
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 public class Favourite {

@@ -4,16 +4,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.encs5150_project.model.entity.EntityStatus;
-import com.example.encs5150_project.model.entity.Event;
+import com.example.encs5150_project.model.entity.*;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 import com.example.encs5150_project.model.repository.database.contracts.EventContract;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.*;
+import java.util.*;
 
 public class EventRepository{
     private final DataBaseHelper dataBaseHelper;

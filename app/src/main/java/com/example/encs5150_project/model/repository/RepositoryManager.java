@@ -17,7 +17,7 @@ public final class RepositoryManager {
     public RepositoryManager(Context context) {
         DataBaseHelper dataBaseHelper = DataBaseHelper.getInstance(context.getApplicationContext());
         eventRepository = new EventRepository(dataBaseHelper);
-        personRepository = new PersonRepository(dataBaseHelper);
+        personRepository = new PersonRepository();
         reservationRepository = new ReservationRepository(dataBaseHelper);
         userRepository = new UserRepository(dataBaseHelper);
         adminRepository = new AdminRepository(dataBaseHelper);

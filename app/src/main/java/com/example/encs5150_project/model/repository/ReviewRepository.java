@@ -4,15 +4,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.encs5150_project.model.entity.EntityStatus;
-import com.example.encs5150_project.model.entity.Review;
+import com.example.encs5150_project.model.entity.*;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 import com.example.encs5150_project.model.repository.database.contracts.ReviewContract;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ReviewRepository {
     private final DataBaseHelper dataBaseHelper;

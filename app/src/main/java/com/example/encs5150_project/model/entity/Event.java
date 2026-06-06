@@ -1,11 +1,6 @@
 package com.example.encs5150_project.model.entity;
 
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.*;
 
 public class Event {
     private long id;

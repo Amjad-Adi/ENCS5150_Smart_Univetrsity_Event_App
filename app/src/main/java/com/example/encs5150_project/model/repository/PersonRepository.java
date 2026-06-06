@@ -1,23 +1,13 @@
 package com.example.encs5150_project.model.repository;
 
 import android.content.ContentValues;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.encs5150_project.model.entity.Person;
-import com.example.encs5150_project.model.entity.PersonGender;
-import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 import com.example.encs5150_project.model.repository.database.contracts.PersonContract;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class PersonRepository {
-    private final DataBaseHelper dataBaseHelper;
-    public PersonRepository(DataBaseHelper dataBaseHelper){
-        this.dataBaseHelper=dataBaseHelper;
-    }
     public void insert(SQLiteDatabase db,Person person) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(PersonContract.COLUMN_FIRST_NAME, person.getFirstName());
