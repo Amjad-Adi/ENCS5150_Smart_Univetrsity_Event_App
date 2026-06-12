@@ -12,31 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ENCS5150_Project">
         <activity
-            android:name=".view.AdminHomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.UserHomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.AdminEventsFragment"
-            android:exported="false" />
-        <activity
-            android:name=".view.AdminUserManagementFragment"
-            android:exported="false" />
-        <activity
-            android:name=".view.UserMainHomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.RegistrationFragment"
-            android:exported="false" />
-        <activity
             android:name=".view.IntroductionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.LoginFragment"
-            android:exported="false" />
-        <activity
-            android:name=".controller.LoginController"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
