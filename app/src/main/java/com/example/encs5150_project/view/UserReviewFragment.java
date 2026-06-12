@@ -12,10 +12,10 @@ import com.example.encs5150_project.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ReviewFragment#newInstance} factory method to
+ * Use the {@link UserReviewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ReviewFragment extends Fragment {
+public class UserReviewFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class ReviewFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ReviewFragment() {
+    public UserReviewFragment() {
         // Required empty public constructor
     }
 
@@ -39,8 +39,8 @@ public class ReviewFragment extends Fragment {
      * @return A new instance of fragment ReviewFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ReviewFragment newInstance(String param1, String param2) {
-        ReviewFragment fragment = new ReviewFragment();
+    public static UserReviewFragment newInstance(String param1, String param2) {
+        UserReviewFragment fragment = new UserReviewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
