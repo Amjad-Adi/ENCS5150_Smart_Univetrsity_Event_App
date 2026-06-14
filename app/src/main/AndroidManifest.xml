@@ -9,10 +9,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.ENCS5150_Project">
+        android:supportsRtl="false"
+        android:theme="@style/Base.Theme.Demo">
         <activity
-            android:name=".view.IntroductionActivity"
+            android:name=".view.AdminHomeActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
