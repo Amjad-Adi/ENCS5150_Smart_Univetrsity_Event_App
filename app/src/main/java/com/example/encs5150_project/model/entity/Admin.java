@@ -6,12 +6,12 @@ public class Admin extends Person{
 
     public Admin() {
     }
-    public Admin(String firstName, String secondName, String email, String password, String confirmPassword,String gender, double salary, EntityStatus accountStatus) {
+    public Admin(String firstName, String secondName, String email, String password, String confirmPassword,PersonGender gender, double salary, EntityStatus accountStatus) {
         super( firstName, secondName, email, password, confirmPassword,gender);
         setSalary(salary);
         this.accountStatus = accountStatus;
     }
-    public Admin(long id, String firstName, String secondName, String email, String password, String gender, double salary, EntityStatus accountStatus) {
+    public Admin(long id, String firstName, String secondName, String email, String password, PersonGender gender, double salary, EntityStatus accountStatus) {
         super(id, firstName, secondName, email, password, gender);
         setSalary(salary);
         this.accountStatus = accountStatus;
