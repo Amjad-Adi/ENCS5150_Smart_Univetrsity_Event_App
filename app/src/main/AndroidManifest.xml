@@ -10,40 +10,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ENCS5150_Project">
-        <activity
-            android:name=".view.AdminHomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.UserHomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.AdminEventsFragment"
-            android:exported="false" />
-        <activity
-            android:name=".view.AdminUserManagementFragment"
-            android:exported="false" />
-        <activity
-            android:name=".view.UserMainHomeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.RegistrationFragment"
-            android:exported="false" />
-        <activity
-            android:name=".view.IntroductionActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.LoginFragment"
-            android:exported="false" />
-        <activity
-            android:name=".controller.LoginController"
-            android:exported="true">
+        android:theme="@style/Theme.Final_Project">
+        <activity android:name=".LoginActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <category android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity" android:exported="false" />
+        <activity android:name=".HomeActivity" android:exported="false" />
+        <activity android:name=".RegisterActivity" android:exported="false" />
     </application>
 
 </manifest>
