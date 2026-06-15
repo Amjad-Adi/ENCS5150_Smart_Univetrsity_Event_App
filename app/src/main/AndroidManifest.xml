@@ -12,7 +12,7 @@
         android:supportsRtl="false"
         android:theme="@style/Base.Theme.Demo">
         <activity
-            android:name=".view.AdminHomeActivity"
+            android:name=".view.AdminActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

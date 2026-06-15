@@ -15,13 +15,13 @@ import com.example.encs5150_project.R;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 
-public class AdminHomeActivity extends AppCompatActivity {
+public class AdminActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_admin_home);
+        setContentView(R.layout.activity_admin);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
@@ -38,6 +38,9 @@ public class AdminHomeActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.adminFragment,new AdminHomeFragment()).commit();
+        }
     }
 }
 //<TextView
