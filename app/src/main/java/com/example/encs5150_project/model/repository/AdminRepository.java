@@ -27,6 +27,7 @@ public class AdminRepository {
             ContentValues contentValues = new ContentValues();
             contentValues.put(AdminContract.COLUMN_ID, admin.getId());
             contentValues.put(AdminContract.COLUMN_SALARY, admin.getSalary());
+            contentValues.put(AdminContract.COLUMN_ROLE, admin.getRole().toString());
             if(db.insert(AdminContract.TABLE_NAME,null,contentValues)==-1)
                 throw new RuntimeException("Failed to insert admin into SQLite.");
             db.setTransactionSuccessful();
@@ -42,6 +43,7 @@ public class AdminRepository {
             personRepository.update(db,admin);
             ContentValues adminValues=new ContentValues();
             adminValues.put(AdminContract.COLUMN_SALARY, admin.getSalary());
+            adminValues.put(AdminContract.COLUMN_ROLE, admin.getRole().toString());
             if(db.update(AdminContract.TABLE_NAME,adminValues,AdminContract.COLUMN_ID+" = ?",new String[]{String.valueOf(admin.getId())})==0)
                 throw new RuntimeException("No admin found with id " + admin.getId());
             db.setTransactionSuccessful();
@@ -61,7 +63,7 @@ public class AdminRepository {
         try{
             if(!cursor.moveToFirst())
                 return null;
-            return new Admin(cursor.getLong(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), cursor.getDouble(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_SALARY)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ACCOUNT_STATUS))));
+            return new Admin(cursor.getLong(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), cursor.getDouble(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_SALARY)),AdminRole.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ROLE))) ,EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ACCOUNT_STATUS))));
         }finally {
             cursor.close();
         }
@@ -77,7 +79,7 @@ public class AdminRepository {
         List<Admin>adminList=new ArrayList<>();
         try {
             while(cursor.moveToNext())
-                adminList.add(new Admin(cursor.getLong(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), cursor.getDouble(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_SALARY)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ACCOUNT_STATUS)))));
+                adminList.add(new Admin(cursor.getLong(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), cursor.getDouble(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_SALARY)), AdminRole.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ROLE))),EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ACCOUNT_STATUS)))));
             return adminList;
         } finally {
             cursor.close();

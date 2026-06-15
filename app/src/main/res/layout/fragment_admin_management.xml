@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".view.AdminEventsFragment">
+    tools:context=".view.AdminManagementFragment">
 
     <TextView
-        android:id="@+id/tvEventsScreenTitle"
+        android:id="@+id/tvManagementTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Event Management"
+        android:text="Account Management"
         android:textColor="@color/colorSecondary"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -28,7 +28,7 @@
         android:layout_marginTop="12dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/tvEventsScreenTitle">
+        app:layout_constraintTop_toBottomOf="@id/tvManagementTitle">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/searchInputLayout"
@@ -41,10 +41,10 @@
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusBottomEnd="12dp"
-            android:hint="Search Events...">
+            android:hint="Search name, email, ID...">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etSearchEvents"
+                android:id="@+id/etSearchAccounts"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -52,7 +52,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnFilterEvents"
+            android:id="@+id/btnFilterAccounts"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="56dp"
             android:layout_height="56dp"
@@ -68,29 +68,54 @@
             app:cornerRadius="12dp" />
     </LinearLayout>
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutAccounts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@color/background"
+        app:tabIndicatorColor="@color/colorPrimary"
+        app:tabSelectedTextColor="@color/colorPrimary"
+        app:tabTextColor="@color/colorSecondary"
+        app:layout_constraintTop_toBottomOf="@id/searchFilterContainer">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Users" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Admins" />
+    </com.google.android.material.tabs.TabLayout>
+    <View
+        android:id="@+id/tabDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/surfaceVariant"
+        app:layout_constraintTop_toBottomOf="@id/tabLayoutAccounts" />
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvAdminEvents"
+        android:id="@+id/rvAccounts"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:clipToPadding="false"
         android:paddingBottom="88dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/tabLayoutAccounts"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchFilterContainer"
-        app:layout_constraintVertical_bias="0.0"
-        tools:listitem="@layout/item_events" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_person" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabAddEvent"
+        android:id="@+id/fabAddPerson"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
-        android:text="New Event"
+        android:text="New Account"
         android:textColor="@color/white"
         app:backgroundTint="@color/colorPrimary"
         app:icon="@android:drawable/ic_input_add"

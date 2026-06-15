@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
+import com.example.encs5150_project.model.entity.AdminRole;
 import com.example.encs5150_project.model.entity.EntityStatus;
 import com.example.encs5150_project.model.entity.PersonGender;
 import com.example.encs5150_project.model.entity.ReservationStatus;
@@ -93,6 +94,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 sqlStringBuilder.append("CREATE TABLE ").append(AdminContract.TABLE_NAME).append(" ( ")
                 .append(AdminContract.COLUMN_ID).append(" INTEGER PRIMARY KEY, ")
                 .append(AdminContract.COLUMN_SALARY).append(" REAL DEFAULT ").append(AdminContract.DEFAULT_SALARY).append(" CHECK(").append(AdminContract.COLUMN_SALARY).append(" > 0), ")
+                .append(AdminContract.COLUMN_ROLE).append(" TEXT NOT NULL DEFAULT '").append(AdminContract.DEFAULT_ROLE).append("' CHECK(").append(AdminContract.COLUMN_ROLE).append(" IN ('").append(AdminRole.EMPLOYEE.name()).append("', '").append(AdminRole.ADMINISTRATOR.name()).append("')), ")
                 .append(AdminContract.COLUMN_ACCOUNT_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED.name()).append("' CHECK(").append(AdminContract.COLUMN_ACCOUNT_STATUS).append(" IN ('").append(EntityStatus.ENABLED.name()).append("', '").append(EntityStatus.DISABLED.name()).append("')), ")
                 .append("FOREIGN KEY (").append(AdminContract.COLUMN_ID).append(") REFERENCES ").append(PersonContract.TABLE_NAME).append("(").append(PersonContract.COLUMN_ID).append(") ON DELETE CASCADE ON UPDATE CASCADE)").toString());
     }
