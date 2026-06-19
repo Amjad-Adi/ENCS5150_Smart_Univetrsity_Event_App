@@ -76,12 +76,6 @@ public abstract class Person{
         validatePassword(password);
         this.password = password;
     }
-    public void setPassword(String password,String confirmPassword) {
-        validatePassword(password);
-        if(!password.equals(confirmPassword))
-            throw new IllegalArgumentException("Passwords do not match");
-        this.password = password;
-    }
     private void validatePassword(String password){
         boolean containsLetter=false;
         boolean containsDigit=false;

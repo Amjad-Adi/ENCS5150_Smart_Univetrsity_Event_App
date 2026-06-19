@@ -1,49 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/colorBackground"
-    android:paddingBottom="16dp">
-
-    <View
-        android:id="@+id/dragHandle"
-        android:layout_width="40dp"
-        android:layout_height="4dp"
-        android:layout_marginTop="12dp"
-        android:background="@color/surfaceVariant"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/tvDialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:paddingHorizontal="16dp"
+        android:paddingBottom="16dp"
         android:text="Select Profile Photo"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/dragHandle"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textStyle="bold" />
 
     <LinearLayout
         android:id="@+id/llOptionCamera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="12dp"
-        app:layout_constraintTop_toBottomOf="@id/tvDialogTitle"
-        app:layout_constraintStart_toStartOf="parent">
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="8dp">
 
         <ImageView
             android:layout_width="28dp"
@@ -69,10 +53,8 @@
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="12dp"
-        app:layout_constraintTop_toBottomOf="@id/llOptionCamera"
-        app:layout_constraintStart_toStartOf="parent">
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="8dp">
 
         <ImageView
             android:layout_width="28dp"
@@ -89,4 +71,4 @@
             android:textSize="16sp" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

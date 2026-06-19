@@ -15,6 +15,7 @@ public class PersonRepository {
         contentValues.put(PersonContract.COLUMN_EMAIL, person.getEmail());
         contentValues.put(PersonContract.COLUMN_PASSWORD, person.getPassword());
         contentValues.put(PersonContract.COLUMN_GENDER, person.getGender().name());
+        contentValues.put(PersonContract.COLUMN_GENDER, person.getGender().name());
         long generatedId = db.insert(PersonContract.TABLE_NAME, null, contentValues);
         if (generatedId==-1)
             throw new RuntimeException("Failed to insert person into SQLite.");
@@ -28,6 +29,7 @@ public class PersonRepository {
         contentValues.put(PersonContract.COLUMN_EMAIL, person.getEmail());
         contentValues.put(PersonContract.COLUMN_PASSWORD, person.getPassword());
         contentValues.put(PersonContract.COLUMN_GENDER, person.getGender().name());
+        contentValues.put(PersonContract.COLUMN_PROFILE_PICTURE_PATH, person.getProfilePicturePath());
         if (db.update(PersonContract.TABLE_NAME,contentValues,PersonContract.COLUMN_ID+" = ?",new String[]{String.valueOf(person.getId())})==0)
             throw new RuntimeException("No person found with id " + person.getId());
     }

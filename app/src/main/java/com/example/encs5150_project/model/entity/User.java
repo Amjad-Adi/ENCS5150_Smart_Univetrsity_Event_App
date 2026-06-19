@@ -4,13 +4,13 @@ public class User extends Person{
     private UserMajor major;
     private String phoneNumber;
     private EntityStatus accountStatus;
-    public User(String firstName, String secondName, String email, String password, PersonGender gender, UserMajor major, String profilePicturePath, String phoneNumber, EntityStatus accountStatus) {
+    public User(String firstName, String secondName, String email, String password, PersonGender gender, UserMajor major, String phoneNumber, EntityStatus accountStatus) {
         super(firstName, secondName, email, password, gender);
         this.major = major;
         this.phoneNumber = phoneNumber;
         this.accountStatus = accountStatus;
     }
-    public User(long id, String firstName, String secondName, String email, String password, PersonGender gender, UserMajor major, String profilePicturePath, String phoneNumber, EntityStatus accountStatus) {
+    public User(long id, String firstName, String secondName, String email, String password, PersonGender gender, UserMajor major, String phoneNumber, EntityStatus accountStatus) {
         super(id, firstName, secondName, email, password, gender);
         this.major = major;
         this.phoneNumber = phoneNumber;

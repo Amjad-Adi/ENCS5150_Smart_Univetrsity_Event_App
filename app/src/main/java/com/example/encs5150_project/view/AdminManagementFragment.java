@@ -36,7 +36,7 @@ public class AdminManagementFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AdminManagementSectionFragment.
+     * @return A new instance of fragment AdminUserManagmentFragment.
      */
     // TODO: Rename and change types and number of parameters
     public static AdminManagementFragment newInstance(String param1, String param2) {
