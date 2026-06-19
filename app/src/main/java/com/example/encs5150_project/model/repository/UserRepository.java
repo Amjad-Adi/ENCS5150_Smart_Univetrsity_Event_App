@@ -52,7 +52,6 @@ public class UserRepository {
         personValues.put(PersonContract.COLUMN_GENDER, user.getGender().name());
         userValues.put(UserContract.COLUMN_MAJOR, user.getMajor().name());
         userValues.put(UserContract.COLUMN_PHONE_NUMBER, user.getPhoneNumber());
-        userValues.put(UserContract.COLUMN_PROFILE_PICTURE_PATH, user.getProfilePicturePath());
         db.beginTransaction();
         try{
             if(db.update(PersonContract.TABLE_NAME,personValues,PersonContract.COLUMN_ID+" = ?",new String[]{String.valueOf(user.getId())})==0)
@@ -67,7 +66,7 @@ public class UserRepository {
 
     public User findById(long id) {
         SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT P.*, U."+UserContract.COLUMN_MAJOR+", U."+UserContract.COLUMN_PHONE_NUMBER+", U."+UserContract.COLUMN_PROFILE_PICTURE_PATH+", U."+UserContract.COLUMN_ACCOUNT_STATUS +
+        Cursor cursor = db.rawQuery("SELECT P.*, U."+UserContract.COLUMN_MAJOR+", U."+UserContract.COLUMN_PHONE_NUMBER+", U."+UserContract.COLUMN_ACCOUNT_STATUS +
                 " FROM " + UserContract.TABLE_NAME + " U" +
                 " JOIN " + PersonContract.TABLE_NAME + " P" +
                 " ON U." + UserContract.COLUMN_ID + " = P." + PersonContract.COLUMN_ID +
@@ -75,7 +74,7 @@ public class UserRepository {
         try{
             if(!cursor.moveToFirst())
                 return null;
-            return new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PROFILE_PICTURE_PATH)), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS))));
+            return new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS))));
         }finally {
             cursor.close();
         }
@@ -83,14 +82,14 @@ public class UserRepository {
     public List<User> findAll() {
         SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT P.*, U."+UserContract.COLUMN_MAJOR+", U."+UserContract.COLUMN_PHONE_NUMBER+", U."+UserContract.COLUMN_PROFILE_PICTURE_PATH+", U."+UserContract.COLUMN_ACCOUNT_STATUS +
+                "SELECT P.*, U."+UserContract.COLUMN_MAJOR+", U."+UserContract.COLUMN_PHONE_NUMBER+", U."+UserContract.COLUMN_ACCOUNT_STATUS +
                         " FROM " + UserContract.TABLE_NAME + " U " +
                         "JOIN " + PersonContract.TABLE_NAME + " P " +
                         "ON U." + UserContract.COLUMN_ID + " = P." + PersonContract.COLUMN_ID,null);
         List<User>userList=new ArrayList<>();
         try {
             while(cursor.moveToNext())
-                userList.add(new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)),PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PROFILE_PICTURE_PATH)), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS)))));
+                userList.add(new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)),PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS)))));
             return userList;
         } finally {
             cursor.close();

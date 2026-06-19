@@ -12,10 +12,10 @@ import com.example.encs5150_project.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AdminUserManagmentFragment#newInstance} factory method to
+ * Use the {@link AdminProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AdminUserManagmentFragment extends Fragment {
+public class AdminProfileFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +26,7 @@ public class AdminUserManagmentFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public AdminUserManagmentFragment() {
+    public AdminProfileFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +36,11 @@ public class AdminUserManagmentFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AdminUserManagmentFragment.
+     * @return A new instance of fragment AdminManagementSectionFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AdminUserManagmentFragment newInstance(String param1, String param2) {
-        AdminUserManagmentFragment fragment = new AdminUserManagmentFragment();
+    public static AdminProfileFragment newInstance(String param1, String param2) {
+        AdminProfileFragment fragment = new AdminProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -55,6 +55,7 @@ public class AdminUserManagmentFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
