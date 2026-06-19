@@ -16,8 +16,6 @@ import com.example.encs5150_project.model.repository.EventRepository;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 
 public class IntroductionActivity extends AppCompatActivity implements FetchStatus {
-    private IntroductionController introductionController;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +39,7 @@ public class IntroductionActivity extends AppCompatActivity implements FetchStat
             public void onClick(View view) {
                 buttonConnect.setEnabled(false);
                 progressBar.setVisibility(ProgressBar.VISIBLE);
-                EventRepository eventRepository = new EventRepository(DataBaseHelper.getInstance(IntroductionActivity.this)) ;
-                IntroductionController introductionController = new IntroductionController(eventRepository,IntroductionActivity.this);
+                IntroductionController introductionController = new IntroductionController(new EventRepository(DataBaseHelper.getInstance(IntroductionActivity.this)),IntroductionActivity.this);
                 introductionController.fetchData();
             }
         });
