@@ -102,4 +102,36 @@ public class UserRepository {
         if (db.update(UserContract.TABLE_NAME,contentValues,UserContract.COLUMN_ID+" = ?",new String[]{String.valueOf(id)})==0)
             throw new RuntimeException("No user found with id " + id);
     }
+    public User findByEmail(String email) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT P.*, U."+UserContract.COLUMN_MAJOR+", U."+UserContract.COLUMN_PHONE_NUMBER+", U."+UserContract.COLUMN_ACCOUNT_STATUS +
+                " FROM " + UserContract.TABLE_NAME + " U" +
+                " JOIN " + PersonContract.TABLE_NAME + " P" +
+                " ON U." + UserContract.COLUMN_ID + " = P." + PersonContract.COLUMN_ID +
+                " WHERE P." + PersonContract.COLUMN_EMAIL + " =?", new String[]{email});
+        try{
+            if(!cursor.moveToFirst())
+                return null;
+            return new User(cursor.getLong(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)),
+                    PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))),
+                    UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))),
+                    cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)),
+                    EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS))));
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public boolean isEmailExists(String email) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT 1 FROM " + PersonContract.TABLE_NAME +
+                " WHERE " + PersonContract.COLUMN_EMAIL + " =?", new String[]{email});
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        return exists;
+    }
 }

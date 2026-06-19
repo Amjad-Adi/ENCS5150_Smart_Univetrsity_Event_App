@@ -92,4 +92,29 @@ public class AdminRepository {
         if (db.update(AdminContract.TABLE_NAME,contentValues,AdminContract.COLUMN_ID+" = ?",new String[]{String.valueOf(id)})==0)
             throw new RuntimeException("No admin found with id " + id);
     }
+    public Admin findByEmail(String email) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT P.*, A." + AdminContract.COLUMN_SALARY + ", A." + AdminContract.COLUMN_ROLE + ", A." + AdminContract.COLUMN_ACCOUNT_STATUS +
+                " FROM " + AdminContract.TABLE_NAME + " A" +
+                " JOIN " + PersonContract.TABLE_NAME + " P" +
+                " ON A." + AdminContract.COLUMN_ID + " = P." + PersonContract.COLUMN_ID +
+                " WHERE P." + PersonContract.COLUMN_EMAIL + " =?", new String[]{email});
+        try {
+            if (!cursor.moveToFirst())
+                return null;
+            return new Admin(
+                    cursor.getLong(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)),
+                    PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))),
+                    cursor.getDouble(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_SALARY)),
+                    AdminRole.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ROLE))),
+                    EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ACCOUNT_STATUS)))
+            );
+        } finally {
+            cursor.close();
+        }
+    }
 }

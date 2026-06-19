@@ -47,6 +47,6 @@
         app:itemIconTint="@color/colorPrimary"
         app:itemTextColor="@color/colorSecondary"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/nav_bar" />
+        app:menu="@menu/admin_nav_bar" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

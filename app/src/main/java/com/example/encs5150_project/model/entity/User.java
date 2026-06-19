@@ -4,6 +4,10 @@ public class User extends Person{
     private UserMajor major;
     private String phoneNumber;
     private EntityStatus accountStatus;
+    public User(String email, String password) {
+        setEmail(email);
+        setPassword(password);
+    }
     public User(String firstName, String secondName, String email, String password, PersonGender gender, UserMajor major, String phoneNumber, EntityStatus accountStatus) {
         super(firstName, secondName, email, password, gender);
         this.major = major;
