@@ -7,8 +7,8 @@ public class Admin extends Person{
 
     public Admin() {
     }
-    public Admin(String firstName, String secondName, String email, String password, String confirmPassword,PersonGender gender, double salary,AdminRole role ,EntityStatus accountStatus) {
-        super( firstName, secondName, email, password, confirmPassword,gender);
+    public Admin(String firstName, String secondName, String email, String password,PersonGender gender, double salary,AdminRole role ,EntityStatus accountStatus) {
+        super( firstName, secondName, email, password,gender);
         setSalary(salary);
         this.accountStatus = accountStatus;
         this.role=role;

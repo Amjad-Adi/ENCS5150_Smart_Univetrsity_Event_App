@@ -7,6 +7,7 @@ public abstract class Person{
     private String email;
     private String password;
     private PersonGender gender;
+    private String profilePicturePath;
     private static final int NAME_MIN_NUMBER_OF_CHARACTERS=3;
     private static final int PASSWORD_MIN_NUMBER_OF_CHARACTERS=6;
     private static final int PASSWORD_MIN_NUMBER_OF_LETTERS=1;
@@ -14,11 +15,11 @@ public abstract class Person{
     public Person() {
     }
 
-    public Person(String firstName, String lastName, String email, String password, String confirmPassword,PersonGender gender) {
+    public Person(String firstName, String lastName, String email, String password,PersonGender gender) {
         setFirstName(firstName);
         setLastName(lastName);
         setEmail(email);
-        setPassword(password,confirmPassword);
+        setPassword(password);
         this.gender = gender;
     }
     public Person(long id,String firstName, String lastName, String email, String password, PersonGender gender) {
@@ -104,6 +105,14 @@ public abstract class Person{
 
     public void setGender(PersonGender gender) {
         this.gender = gender;
+    }
+
+    public String getProfilePicturePath() {
+        return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+        this.profilePicturePath = profilePicturePath;
     }
 
 }

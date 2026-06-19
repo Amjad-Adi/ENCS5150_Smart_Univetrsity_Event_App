@@ -1,26 +1,67 @@
 package com.example.encs5150_project.view;
 
-import android.os.Bundle;
+import static com.example.encs5150_project.view.constants.Introduction.*;
+import android.content.Intent;
+import android.os.*;
+import android.view.*;
+import android.view.animation.AnimationUtils;
+import android.widget.*;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.encs5150_project.R;
+import com.example.encs5150_project.controller.IntroductionController;
+import com.example.encs5150_project.model.observer.FetchStatus;
+import com.example.encs5150_project.model.repository.EventRepository;
+import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 
-public class IntroductionActivity extends AppCompatActivity {
+public class IntroductionActivity extends AppCompatActivity implements FetchStatus {
+    private IntroductionController introductionController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_introduction);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        ImageView splashLogo = findViewById(R.id.imageView_SplashLogo);
+        LinearLayout introContent = findViewById(R.id.layout_IntroContent);
+        Button buttonConnect = findViewById(R.id.button_Connect);
+        ProgressBar progressBar=findViewById(R.id.progressBar);
+        splashLogo.startAnimation(AnimationUtils.loadAnimation(IntroductionActivity.this, R.anim.pulse));
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                splashLogo.clearAnimation();
+                splashLogo.startAnimation(AnimationUtils.loadAnimation(IntroductionActivity.this, R.anim.slide_up));
+                introContent.setVisibility(View.VISIBLE);
+                introContent.startAnimation(AnimationUtils.loadAnimation(IntroductionActivity.this, R.anim.fade_in));
+            }
+        }, 2500);
+        buttonConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonConnect.setEnabled(false);
+                progressBar.setVisibility(ProgressBar.VISIBLE);
+                EventRepository eventRepository = new EventRepository(DataBaseHelper.getInstance(IntroductionActivity.this)) ;
+                IntroductionController introductionController = new IntroductionController(eventRepository,IntroductionActivity.this);
+                introductionController.fetchData();
+            }
         });
+    }
+
+    @Override
+    public void fetchSuccess() {
+        ProgressBar progressBar=findViewById(R.id.progressBar);
+        progressBar.setVisibility(ProgressBar.GONE);
+        IntroductionActivity.this.startActivity(new Intent(IntroductionActivity.this, AuthenticationActivity.class));
+        finish();
+    }
+
+    @Override
+    public void fetchFailure(int reason) {
+        Button buttonConnect = findViewById(R.id.button_Connect);
+        ProgressBar progressBar=findViewById(R.id.progressBar);
+        progressBar.setEnabled(false);
+        buttonConnect.setEnabled(true);
+        Toast.makeText(IntroductionActivity.this,reason==0? FAIL_TO_LOAD_FROM_API :DATA_PROBLEM,Toast.LENGTH_SHORT).show();
     }
 }

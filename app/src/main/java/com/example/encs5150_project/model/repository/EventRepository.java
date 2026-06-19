@@ -3,6 +3,7 @@ package com.example.encs5150_project.model.repository;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.encs5150_project.model.entity.*;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
@@ -28,8 +29,8 @@ public class EventRepository{
         contentValues.put(EventContract.COLUMN_LOCATION,event.getLocation());
         contentValues.put(EventContract.COLUMN_TOTAL_SEATS,event.getTotalSeats());
         contentValues.put(EventContract.COLUMN_IMAGE_PATH,event.getImagePath());
-        if(db.insert(EventContract.TABLE_NAME,null,contentValues)==-1)
-            throw new RuntimeException("Failed to insert event into SQLite.");
+        if(db.insertWithOnConflict(EventContract.TABLE_NAME, null,contentValues, SQLiteDatabase.CONFLICT_REPLACE)==-1)
+            throw new RuntimeException("Failed to insert person into SQLite.");
     }
 
     public void update(Event event) {

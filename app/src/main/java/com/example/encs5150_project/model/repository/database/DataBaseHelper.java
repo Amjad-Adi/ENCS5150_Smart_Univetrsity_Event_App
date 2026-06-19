@@ -64,7 +64,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 .append(EventContract.COLUMN_LOCATION).append(" TEXT NOT NULL, ")
                 .append(EventContract.COLUMN_TOTAL_SEATS).append(" INTEGER NOT NULL CHECK(").append(EventContract.COLUMN_TOTAL_SEATS).append(" > 0), ")
                 .append(EventContract.COLUMN_IMAGE_PATH).append(" TEXT DEFAULT '").append(EventContract.DEFAULT_IMAGE_PATH).append("', ")
-                .append(EventContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED.name()).append("' CHECK(").append(EventContract.COLUMN_STATUS).append(" IN ('").append(EntityStatus.ENABLED.name()).append("', '").append(EntityStatus.DISABLED.name()).append("')))").toString());
+                .append(EventContract.COLUMN_STATUS).append(" TEXT DEFAULT '").append(EntityStatus.ENABLED.name()).append("' CHECK(").append(EventContract.COLUMN_STATUS).append(" IN ('").append(EntityStatus.ENABLED.name()).append("', '").append(EntityStatus.DISABLED.name()).append("')))").toString());
     }
     private void createPersonTableSQL(SQLiteDatabase db){
         StringBuilder sqlStringBuilder=new StringBuilder();
