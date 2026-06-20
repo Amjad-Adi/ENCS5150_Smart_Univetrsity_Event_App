@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.AuthenticationController;
 import com.example.encs5150_project.model.PasswordHashingAlgorithm;
+import com.example.encs5150_project.model.repository.AdminRepository;
 import com.example.encs5150_project.model.repository.UserRepository;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 import com.example.encs5150_project.model.repository.preferences.SharedPrefManager;
@@ -28,7 +29,7 @@ public class AuthenticationActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        controller = new AuthenticationController(SharedPrefManager.getInstance(this),new UserRepository(DataBaseHelper.getInstance(this)),new PasswordHashingAlgorithm());
+        controller = new AuthenticationController(SharedPrefManager.getInstance(this),new UserRepository(DataBaseHelper.getInstance(this)),new AdminRepository(DataBaseHelper.getInstance(this)),new PasswordHashingAlgorithm());
         if (savedInstanceState == null) {
             loadFragment(new LoginFragment());
         }

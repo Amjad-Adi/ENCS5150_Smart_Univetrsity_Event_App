@@ -14,9 +14,8 @@ import java.util.List;
 
 public class IntroductionController implements APIFetchObserver {
     private final String SERVER_URL="https://mocki.io/v1/af1b6be0-61a9-464f-9d02-178bc5617b28";
-    private EventRepository eventRepository;
-    private FetchStatus fetchStatus;
-    public static boolean successFetch=true;
+    private final EventRepository eventRepository;
+    private final FetchStatus fetchStatus;
     public IntroductionController(EventRepository eventRepository,FetchStatus fetchStatus) {
         this.eventRepository=eventRepository;
         this.fetchStatus = fetchStatus;

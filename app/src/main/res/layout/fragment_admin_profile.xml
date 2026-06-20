@@ -24,21 +24,39 @@
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/ivAdminProfilePic"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profileContainer"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="24dp"
-            android:scaleType="centerCrop"
-            android:background="@color/surfaceVariant"
-            android:clickable="true"
-            android:focusable="true"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
             app:layout_constraintTop_toBottomOf="@id/tvProfileTitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivAdminProfilePic"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:background="@color/surfaceVariant"
+                app:srcCompat="@drawable/profile"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/tvChangePhoto"
@@ -53,7 +71,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackground"
             android:padding="4dp"
-            app:layout_constraintTop_toBottomOf="@id/ivAdminProfilePic"
+            app:layout_constraintTop_toBottomOf="@id/profileContainer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

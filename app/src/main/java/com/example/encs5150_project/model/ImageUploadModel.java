@@ -9,6 +9,7 @@ import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
 import com.cloudinary.android.callback.UploadCallback;
 import com.example.encs5150_project.model.observer.UploadCallbackObserver;
+import com.example.encs5150_project.model.config.CloudServer;
 
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class ImageUploadModel{
 
     public void uploadToCloudinary(Uri imageUri) {
         MediaManager.get().upload(imageUri)
-                .unsigned("smart_campus_system")
+                .unsigned(CloudServer.CLOUD_SERVER_NAME)
                 .callback(new UploadCallback() {
                     @Override
                     public void onStart(String requestId) { }

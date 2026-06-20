@@ -72,11 +72,11 @@ public abstract class Person{
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
-        validatePassword(password);
         this.password = password;
     }
-    private void validatePassword(String password){
+    public static void validatePassword(String password){
         boolean containsLetter=false;
         boolean containsDigit=false;
         if(password.length()<PASSWORD_MIN_NUMBER_OF_CHARACTERS)

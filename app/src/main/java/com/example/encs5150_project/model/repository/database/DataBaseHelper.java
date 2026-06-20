@@ -1,16 +1,23 @@
 package com.example.encs5150_project.model.repository.database;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import androidx.annotation.Nullable;
 
+import com.example.encs5150_project.model.PasswordHashingAlgorithm;
+import com.example.encs5150_project.model.entity.Admin;
 import com.example.encs5150_project.model.entity.AdminRole;
 import com.example.encs5150_project.model.entity.EntityStatus;
 import com.example.encs5150_project.model.entity.PersonGender;
 import com.example.encs5150_project.model.entity.ReservationStatus;
 import com.example.encs5150_project.model.entity.ReservationType;
 import com.example.encs5150_project.model.entity.UserMajor;
+import com.example.encs5150_project.model.repository.AdminRepository;
+import com.example.encs5150_project.model.config.DefaultAdmin;
 import com.example.encs5150_project.model.repository.database.contracts.AdminContract;
 import com.example.encs5150_project.model.repository.database.contracts.EventContract;
 import com.example.encs5150_project.model.repository.database.contracts.FavouriteContract;
@@ -18,6 +25,9 @@ import com.example.encs5150_project.model.repository.database.contracts.PersonCo
 import com.example.encs5150_project.model.repository.database.contracts.ReservationContract;
 import com.example.encs5150_project.model.repository.database.contracts.ReviewContract;
 import com.example.encs5150_project.model.repository.database.contracts.UserContract;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     private static DataBaseHelper instance;
@@ -40,6 +50,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         createReservationTableSQL(db);
         createFavouriteTableSQL(db);
         createReviewTableSQL(db);
+        insertDefaultAdmin(db);
     }
 
     @Override
@@ -75,7 +86,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                         .append(PersonContract.COLUMN_LAST_NAME).append(" TEXT NOT NULL, ")
                         .append(PersonContract.COLUMN_EMAIL).append(" TEXT NOT NULL UNIQUE, ")
                         .append(PersonContract.COLUMN_PASSWORD).append(" TEXT NOT NULL, ")
-                        .append(PersonContract.COLUMN_GENDER).append(" TEXT NOT NULL CHECK(").append(PersonContract.COLUMN_GENDER).append(" IN ('").append(PersonGender.Male.name()).append("', '").append(PersonGender.Female.name()).append("')), ")
+                        .append(PersonContract.COLUMN_GENDER).append(" TEXT NOT NULL CHECK(").append(PersonContract.COLUMN_GENDER).append(" IN ('").append(PersonGender.MALE.name()).append("', '").append(PersonGender.FEMALE.name()).append("')), ")
                         .append(PersonContract.COLUMN_PROFILE_PICTURE_PATH).append(" TEXT NOT NULL DEFAULT '").append(PersonContract.DEFAULT_PROFILE_PICTURE_PATH).append("')").toString());
     }
     private void createUserTableSQL(SQLiteDatabase db){
@@ -135,5 +146,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 .append(ReviewContract.COLUMN_DATE).append(" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, ")
                 .append(ReviewContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED.name()).append("' CHECK(").append(ReviewContract.COLUMN_STATUS).append(" IN ('").append(EntityStatus.ENABLED.name()).append("', '").append(EntityStatus.DISABLED.name()).append("')), ")
                 .append("FOREIGN KEY (").append(ReviewContract.COLUMN_RESERVATION_ID).append(") REFERENCES ").append(ReservationContract.TABLE_NAME).append("(").append(ReservationContract.COLUMN_ID).append(")  ON DELETE CASCADE ON UPDATE CASCADE)").toString());
+    }
+    public void insertDefaultAdmin(SQLiteDatabase db) {
+        ContentValues personValues = new ContentValues();
+        personValues.put(PersonContract.COLUMN_FIRST_NAME, DefaultAdmin.FIRST_NAME);
+        personValues.put(PersonContract.COLUMN_LAST_NAME, DefaultAdmin.LAST_NAME);
+        personValues.put(PersonContract.COLUMN_EMAIL, DefaultAdmin.EMAIL);
+        personValues.put(PersonContract.COLUMN_PASSWORD, DefaultAdmin.HASHED_PASSWORD);
+        personValues.put(PersonContract.COLUMN_GENDER, DefaultAdmin.GENDER.name());
+        long newPersonId = db.insert(PersonContract.TABLE_NAME, null, personValues);
+        if (newPersonId != -1) {
+            ContentValues adminValues = new ContentValues();
+            adminValues.put(AdminContract.COLUMN_ID, newPersonId);
+            adminValues.put(AdminContract.COLUMN_SALARY, DefaultAdmin.SALARY);
+            adminValues.put(AdminContract.COLUMN_ROLE, DefaultAdmin.ROLE.name());
+            adminValues.put(AdminContract.COLUMN_ACCOUNT_STATUS, DefaultAdmin.ACCOUNT_STATUS.name());
+            db.insert(AdminContract.TABLE_NAME, null, adminValues);
+        }
     }
 }

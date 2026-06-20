@@ -9,11 +9,16 @@ import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.cloudinary.android.MediaManager;
 import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.IntroductionController;
 import com.example.encs5150_project.model.observer.FetchStatus;
 import com.example.encs5150_project.model.repository.EventRepository;
+import com.example.encs5150_project.model.config.CloudServer;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class IntroductionActivity extends AppCompatActivity implements FetchStatus {
     @Override
@@ -43,13 +48,20 @@ public class IntroductionActivity extends AppCompatActivity implements FetchStat
                 introductionController.fetchData();
             }
         });
+        try {
+            Map<String, String> config = new HashMap<>();
+            config.put(CloudServer.CLOUD_NAME_FIELD, CloudServer.CLOUD_NAME_DATA);
+            MediaManager.init(getApplicationContext(), config);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void fetchSuccess() {
         ProgressBar progressBar=findViewById(R.id.progressBar);
         progressBar.setVisibility(ProgressBar.GONE);
-        IntroductionActivity.this.startActivity(new Intent(IntroductionActivity.this, AuthenticationActivity.class));
+        startActivity(new Intent(IntroductionActivity.this, AuthenticationActivity.class));
         finish();
     }
 
