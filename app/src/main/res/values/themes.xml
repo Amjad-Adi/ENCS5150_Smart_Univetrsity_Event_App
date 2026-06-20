@@ -1,12 +1,12 @@
 <resources>
-    <style name="Base.Theme.Demo"
-        parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Demo" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorSecondary">@color/colorSecondary</item>
     </style>
-    <style name="Theme.Demo"
-        parent="Base.Theme.Demo"/>
-    <style name="CircleImageView" parent="">
+
+    <style name="Theme.Demo" parent="Base.Theme.Demo" />
+
+    <style name="CircleImageView">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
