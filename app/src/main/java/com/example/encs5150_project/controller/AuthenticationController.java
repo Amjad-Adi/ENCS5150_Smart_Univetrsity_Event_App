@@ -63,17 +63,13 @@ public class AuthenticationController {
         try {
             User.validatePassword(password);
             Admin admin = adminRepository.findByEmail(cleanEmail);
-            if(admin!=null){
-                if(admin.getAccountStatus()==EntityStatus.ENABLED){
-                    return finalizeLogin(cleanEmail, rememberMe, AuthStatus.SUCCESS_ADMIN);
-                }
-                else {
-                    return new AuthResponse(AuthStatus.ERROR_DISABLED, "Your account has been deactivated. Please contact support.");
-                }
-            }
             if (admin != null) {
                 if (passwordHashingAlgorithm.verifyPassword(password, admin.getPassword())) {
-                    return finalizeLogin(cleanEmail, rememberMe, AuthStatus.SUCCESS_ADMIN);
+                    if (admin.getAccountStatus() == EntityStatus.ENABLED) {
+                        return finalizeLogin(cleanEmail, rememberMe, AuthStatus.SUCCESS_ADMIN);
+                    } else {
+                        return new AuthResponse(AuthStatus.ERROR_DISABLED, "Your account has been deactivated. Please contact support.");
+                    }
                 } else {
                     return new AuthResponse(AuthStatus.ERROR_CREDENTIALS, "Incorrect email or password");
                 }
@@ -86,22 +82,19 @@ public class AuthenticationController {
                 }
             }
             User user = userRepository.findByEmail(cleanEmail);
-            if(user!=null){
-                if(user.getAccountStatus()==EntityStatus.ENABLED){
-                    return finalizeLogin(cleanEmail, rememberMe, AuthStatus.SUCCESS_USER);
-                }
-                else {
-                    return new AuthResponse(AuthStatus.ERROR_DISABLED, "Your account has been deactivated. Please contact support.");
-                }
-            }
             if (user != null) {
                 if (passwordHashingAlgorithm.verifyPassword(password, user.getPassword())) {
-                    return finalizeLogin(cleanEmail, rememberMe, AuthStatus.SUCCESS_USER);
+                    if (user.getAccountStatus() == EntityStatus.ENABLED) {
+                        return finalizeLogin(cleanEmail, rememberMe, AuthStatus.SUCCESS_USER);
+                    } else {
+                        return new AuthResponse(AuthStatus.ERROR_DISABLED, "Your account has been deactivated. Please contact support.");
+                    }
                 } else {
                     return new AuthResponse(AuthStatus.ERROR_CREDENTIALS, "Incorrect email or password");
                 }
             }
             return new AuthResponse(AuthStatus.ERROR_CREDENTIALS, "Incorrect email or password");
+
         } catch (IllegalArgumentException e) {
             return new AuthResponse(AuthStatus.ERROR_VALIDATION, e.getMessage());
         } catch (Exception e) {
@@ -119,8 +112,9 @@ public class AuthenticationController {
     public AuthResponse handleRegistration(String firstName, String lastName, String email, String phone, String password, String confirmPassword, String genderStr, String majorStr) {
         AuthResponse basicValidation = validateBasicFields(firstName, lastName, email, password, confirmPassword, genderStr);
         if (basicValidation != null) return basicValidation;
-        if (phone.trim().isEmpty()) return new AuthResponse(AuthStatus.ERROR_VALIDATION, "Phone number is required");
-        if (majorStr.isEmpty() || majorStr.equals("Select Category") || majorStr.equals("Select Major")) {
+        if (phone==null||phone.trim().isEmpty())
+            return new AuthResponse(AuthStatus.ERROR_VALIDATION, "Phone number is required");
+        if (majorStr == null ||majorStr.isEmpty() || majorStr.equals("Select Category") || majorStr.equals("Select Major")) {
             return new AuthResponse(AuthStatus.ERROR_VALIDATION, "Please select a valid major");
         }
         try {

@@ -58,13 +58,16 @@
             android:hint="Email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView_Subtitle">
+            app:layout_constraintTop_toBottomOf="@id/textView_Subtitle"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/success">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editText_Email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:textColor="@color/colorSecondary"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -77,13 +80,16 @@
             app:endIconMode="password_toggle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textInputLayout_Email">
+            app:layout_constraintTop_toBottomOf="@id/textInputLayout_Email"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/success">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editText_Password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="@color/colorSecondary"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.checkbox.MaterialCheckBox

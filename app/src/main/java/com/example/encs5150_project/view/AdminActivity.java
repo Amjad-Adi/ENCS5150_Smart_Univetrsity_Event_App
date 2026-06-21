@@ -85,7 +85,7 @@ public class AdminActivity extends AppCompatActivity {
                     replaceFragment(new AdminManagementFragment(), "Manage Accounts");
                 } else if (itemId == R.id.admin_nav_profile) {
                     replaceFragment(new AdminProfileFragment(), "My Profile");
-                }else if (itemId == R.id.admin_nav_log_out) {
+                } else if (itemId == R.id.admin_nav_log_out) {
                     drawerLayout.closeDrawer(GravityCompat.START);
                     drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
                         @Override
@@ -102,7 +102,9 @@ public class AdminActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    return true;
                 }
+                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }
         });

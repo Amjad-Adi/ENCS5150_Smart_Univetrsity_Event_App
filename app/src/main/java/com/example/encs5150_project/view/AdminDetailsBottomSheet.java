@@ -28,6 +28,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.AdminDetailsController;
+import com.example.encs5150_project.controller.ImagePickerController;
 import com.example.encs5150_project.controller.ImageUploadController;
 import com.example.encs5150_project.model.entity.Admin;
 import com.example.encs5150_project.model.entity.AdminRole;
@@ -44,6 +45,7 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
 
     private AdminDetailsController detailController;
     private ImageUploadController imageUploadController;
+    private ImagePickerController imagePickerController;
     private Admin currentAdmin;
     private String uploadedProfilePicUrl = null;
 
@@ -54,7 +56,6 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
     private ProgressBar progressBar;
     private LinearLayout llDefaultActions, llEditActions;
     private MaterialButton btnEditMode, btnDisableAccount, btnCancelEdit, btnSaveAdmin;
-
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -143,6 +144,9 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
                     showPhotoOptionsDialog();
                 }
             }
+        });
+        imagePickerController = new ImagePickerController(this, imageUri -> {
+            imageUploadController.handleImageSelected(requireContext(), imageUri);
         });
     }
 
@@ -253,7 +257,7 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Toast.makeText(getContext(), "Camera selected", Toast.LENGTH_SHORT).show();
+                imagePickerController.checkCameraPermissionAndLaunch();
             }
         });
 
@@ -261,8 +265,7 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                galleryLauncher.launch(intent);
+                imagePickerController.launchGallery();
             }
         });
         dialog.show();

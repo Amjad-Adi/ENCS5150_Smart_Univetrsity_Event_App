@@ -24,6 +24,7 @@
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/profileContainer"
             android:layout_width="100dp"
@@ -91,12 +92,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
-                android:hint="First Name">
+                android:hint="First Name"
+                android:textColorHint="@color/hintColor"
+                app:hintTextColor="@color/success">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etProfileFirstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textColor="@color/colorSecondary" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -105,14 +109,15 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
-                android:hint="Last Name">
-
+                android:hint="Last Name"
+                android:textColorHint="@color/hintColor"
+                app:hintTextColor="@color/success">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etProfileLastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:editable="false"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textColor="@color/colorSecondary" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -126,16 +131,18 @@
             android:hint="Email Address (Locked)"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/llNames">
+            app:layout_constraintTop_toBottomOf="@id/llNames"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/success">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etProfileEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:editable="false"
                 android:enabled="false"
                 android:focusable="false"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:textColor="@color/colorSecondary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -149,12 +156,15 @@
             app:passwordToggleEnabled="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilProfileEmail">
+            app:layout_constraintTop_toBottomOf="@id/tilProfileEmail"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/success">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etProfilePassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="@color/colorSecondary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -168,12 +178,15 @@
             app:passwordToggleEnabled="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilProfilePassword">
+            app:layout_constraintTop_toBottomOf="@id/tilProfilePassword"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/success">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etProfileConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="@color/colorSecondary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -186,12 +199,16 @@
             android:hint="Gender"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilProfileConfirmPassword">
+            app:layout_constraintTop_toBottomOf="@id/tilProfileConfirmPassword"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/success">
 
             <AutoCompleteTextView
                 android:id="@+id/actvProfileGender"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:textColor="@color/colorSecondary" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton

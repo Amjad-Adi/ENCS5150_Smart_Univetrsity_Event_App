@@ -115,12 +115,15 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="First Name">
+                android:hint="First Name"
+                android:textColorHint="@color/hintColor"
+                app:hintTextColor="@color/success">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etFirstName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    android:textColor="@color/colorSecondary" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -129,12 +132,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="Last Name">
+                android:hint="Last Name"
+                android:textColorHint="@color/hintColor"
+                app:hintTextColor="@color/success">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etLastName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    android:textColor="@color/colorSecondary" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -143,13 +149,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="Email Address">
+                android:hint="Email Address"
+                android:textColorHint="@color/hintColor"
+                app:hintTextColor="@color/success">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    android:textColor="@color/colorSecondary" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -158,13 +167,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="Salary">
+                android:hint="Salary"
+                android:textColorHint="@color/hintColor"
+                app:hintTextColor="@color/success">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSalary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
-                    android:enabled="false" />
+                    android:enabled="false"
+                    android:textColor="@color/colorSecondary" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
@@ -181,13 +193,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
-                    android:hint="Gender">
+                    android:hint="Gender"
+                    android:textColorHint="@color/hintColor"
+                    app:hintTextColor="@color/success">
                     <AutoCompleteTextView
                         android:id="@+id/actvGender"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
-                        android:enabled="false" />
+                        android:enabled="false"
+                        android:textColor="@color/colorSecondary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -197,13 +212,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="4dp"
-                    android:hint="Role">
+                    android:hint="Role"
+                    android:textColorHint="@color/hintColor"
+                    app:hintTextColor="@color/success">
                     <AutoCompleteTextView
                         android:id="@+id/actvRole"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none"
-                        android:enabled="false" />
+                        android:enabled="false"
+                        android:textColor="@color/colorSecondary" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </LinearLayout>
