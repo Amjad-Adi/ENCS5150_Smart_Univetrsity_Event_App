@@ -24,41 +24,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/profileContainer"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivEventDetailPic"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="24dp"
+            android:scaleType="centerCrop"
+            android:background="?attr/colorSurfaceVariant"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
             app:layout_constraintTop_toBottomOf="@id/dragHandle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/ivDetailProfilePic"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:scaleType="centerCrop"
-                android:background="?attr/colorSurfaceVariant"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:src="@tools:sample/avatars" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/tvChangePhotoAdmin"
+            android:id="@+id/tvChangeEventPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -73,31 +54,31 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profileContainer" />
+            app:layout_constraintTop_toBottomOf="@id/ivEventDetailPic" />
 
         <TextView
-            android:id="@+id/tvDetailAccountStatus"
+            android:id="@+id/tvDetailEventStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:textSize="14sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/tvChangePhotoAdmin"
+            app:layout_constraintTop_toBottomOf="@id/tvChangeEventPhoto"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Status: ACTIVE"
             tools:textColor="@color/success" />
 
         <TextView
-            android:id="@+id/tvDetailId"
+            android:id="@+id/tvDetailEventId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="12sp"
-            app:layout_constraintTop_toBottomOf="@id/tvDetailAccountStatus"
+            app:layout_constraintTop_toBottomOf="@id/tvDetailEventStatus"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="Admin ID: #10024" />
+            tools:text="Event ID: #50021" />
 
         <LinearLayout
             android:id="@+id/llFormContainer"
@@ -106,20 +87,20 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/tvDetailId"
+            app:layout_constraintTop_toBottomOf="@id/tvDetailEventId"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilFirstName"
+                android:id="@+id/tilEventTitle"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="First Name"
+                android:hint="Event Title"
                 android:textColorHint="@color/hintColor"
                 app:hintTextColor="@color/success">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFirstName"
+                    android:id="@+id/etEventTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
@@ -127,16 +108,16 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilLastName"
+                android:id="@+id/tilEventDescription"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="Last Name"
+                android:hint="Description"
                 android:textColorHint="@color/hintColor"
                 app:hintTextColor="@color/success">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etLastName"
+                    android:id="@+id/etEventDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
@@ -144,37 +125,18 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilEmail"
+                android:id="@+id/tilEventCategory"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="Email Address"
+                android:hint="Category"
                 android:textColorHint="@color/hintColor"
                 app:hintTextColor="@color/success">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etEmail"
+                    android:id="@+id/etEventCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:enabled="false"
-                    android:textColor="@color/colorSecondary" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilSalary"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="Salary"
-                android:textColorHint="@color/hintColor"
-                app:hintTextColor="@color/success">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSalary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:enabled="false"
                     android:textColor="@color/colorSecondary" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -187,39 +149,100 @@
                 android:baselineAligned="false">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilGender"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:id="@+id/tilEventBookedSeats"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
-                    android:hint="Gender"
+                    android:hint="Booked Seats"
                     android:textColorHint="@color/hintColor"
                     app:hintTextColor="@color/success">
-                    <AutoCompleteTextView
-                        android:id="@+id/actvGender"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEventBookedSeats"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
+                        android:inputType="number"
                         android:enabled="false"
                         android:textColor="@color/colorSecondary" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilRole"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:id="@+id/tilEventTotalSeats"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="4dp"
-                    android:hint="Role"
+                    android:hint="Total Seats"
                     android:textColorHint="@color/hintColor"
                     app:hintTextColor="@color/success">
-                    <AutoCompleteTextView
-                        android:id="@+id/actvRole"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEventTotalSeats"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
+                        android:inputType="number"
+                        android:enabled="false"
+                        android:textColor="@color/colorSecondary" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilEventLocation"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="Location"
+                android:textColorHint="@color/hintColor"
+                app:hintTextColor="@color/success">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEventLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:textColor="@color/colorSecondary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEventDate"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:hint="Date"
+                    android:textColorHint="@color/hintColor"
+                    app:hintTextColor="@color/success">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEventDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:textColor="@color/colorSecondary" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEventTime"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:hint="Time"
+                    android:textColorHint="@color/hintColor"
+                    app:hintTextColor="@color/success">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEventTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:enabled="false"
                         android:textColor="@color/colorSecondary" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -239,7 +262,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDisableAccount"
+                android:id="@+id/btnDisableEvent"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -281,7 +304,7 @@
                 android:text="Cancel" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSaveAdmin"
+                android:id="@+id/btnSaveEvent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

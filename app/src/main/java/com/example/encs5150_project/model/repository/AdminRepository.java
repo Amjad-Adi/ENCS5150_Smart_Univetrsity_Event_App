@@ -56,7 +56,7 @@ public class AdminRepository {
                 throw new RuntimeException("No admin found with id " + admin.getId());
             if (db.update(AdminContract.TABLE_NAME, adminValues, AdminContract.COLUMN_ID + " = ?", new String[]{String.valueOf(admin.getId())}) == 0)
                 throw new RuntimeException("No admin found with id " + admin.getId());
-                db.setTransactionSuccessful();
+            db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
         }

@@ -46,14 +46,17 @@
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusTopStart="12dp"
-                app:startIconDrawable="@android:drawable/ic_menu_search">
+                app:startIconDrawable="@android:drawable/ic_menu_search"
+                android:textColorHint="@color/hintColor"
+                app:hintTextColor="@color/success">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etSearchAccounts"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textColor="@color/colorSecondary"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -76,13 +79,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Search/Sort Category">
+            android:hint="Search/Sort Category"
+            android:textColorHint="@color/hintColor"
+            app:hintTextColor="@color/success">
 
             <AutoCompleteTextView
                 android:id="@+id/autoComplete_Category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none" />
+                android:inputType="none"
+                android:textColor="@color/colorSecondary"/>
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
