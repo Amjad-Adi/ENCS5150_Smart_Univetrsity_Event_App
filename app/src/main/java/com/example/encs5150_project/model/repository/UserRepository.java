@@ -27,8 +27,8 @@ public class UserRepository {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         db.beginTransaction();
         try {
-            PersonRepository personRepository=new PersonRepository();
-            personRepository.insert(db,user);
+            PersonRepository personRepository=new PersonRepository(dataBaseHelper);
+            personRepository.insert(user);
             ContentValues contentValues = new ContentValues();
             contentValues.put(UserContract.COLUMN_ID, user.getId());
             contentValues.put(UserContract.COLUMN_MAJOR, user.getMajor().toString());

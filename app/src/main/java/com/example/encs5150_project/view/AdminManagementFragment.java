@@ -156,7 +156,7 @@ public class AdminManagementFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof AdminActivity) {
-            controller = ((AdminActivity) getActivity()).getAdminController();
+            controller = ((AdminActivity) getActivity()).getLogOutController();
         }
         rvAccounts = view.findViewById(R.id.rvAccounts);
         tabLayout = view.findViewById(R.id.tabLayoutAccounts);
@@ -179,7 +179,7 @@ public class AdminManagementFragment extends Fragment {
                 AdminActivity parentActivity = (AdminActivity) getActivity();
                 if (parentActivity != null) {
                     AddAccountController addController = parentActivity.getAddAccountController();
-                    boolean canManageAdmins = parentActivity.getAdminController().canManageAdmins();
+                    boolean canManageAdmins = parentActivity.getLogOutController().canManageAdmins();
                     bottomSheet.setSetupData(addController, canManageAdmins);
                     bottomSheet.show(getParentFragmentManager(), "AddAccountSheet");
                 }

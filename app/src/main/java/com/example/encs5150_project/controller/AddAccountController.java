@@ -8,6 +8,7 @@ import com.example.encs5150_project.model.entity.PersonGender;
 import com.example.encs5150_project.model.entity.User;
 import com.example.encs5150_project.model.entity.UserMajor;
 import com.example.encs5150_project.model.repository.AdminRepository;
+import com.example.encs5150_project.model.repository.PersonRepository;
 import com.example.encs5150_project.model.repository.UserRepository;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 
@@ -16,13 +17,14 @@ public class AddAccountController {
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
     private final PasswordHashingAlgorithm passwordHashingAlgorithm;
-
+    private final PersonRepository personRepository;
     public enum AddStatus { SUCCESS, ERROR_VALIDATION, ERROR_SYSTEM }
     public record AddResponse(AddStatus status, String message) {}
 
-    public AddAccountController(UserRepository userRepository, AdminRepository adminRepository, PasswordHashingAlgorithm passwordHashingAlgorithm) {
+    public AddAccountController(UserRepository userRepository, AdminRepository adminRepository,PersonRepository personRepository, PasswordHashingAlgorithm passwordHashingAlgorithm) {
         this.userRepository = userRepository;
         this.adminRepository = adminRepository;
+        this.personRepository=personRepository;
         this.passwordHashingAlgorithm = passwordHashingAlgorithm;
     }
     public AddResponse addUser(String firstName, String lastName, String email, String phone, String password, String confirmPassword, String genderStr, String majorStr) {
@@ -32,7 +34,7 @@ public class AddAccountController {
         if (majorStr.isEmpty() || majorStr.equals("Select Category")) return new AddResponse(AddStatus.ERROR_VALIDATION, "Please select a valid major");
         try {
             User.validatePassword(password);
-            if (userRepository.isEmailExists(DataBaseHelper.getInstance().getReadableDatabase(),email)) {
+            if (personRepository.isEmailExists(email)) {
                 return new AddResponse(AddStatus.ERROR_VALIDATION, "This email is already registered");
             }
             String hashedPassword = passwordHashingAlgorithm.hashPassword(password);

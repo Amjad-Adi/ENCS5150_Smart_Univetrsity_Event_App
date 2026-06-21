@@ -13,7 +13,6 @@ public class AdminUserDetailsController {
 
     private final UserRepository userRepository;
     private final PersonRepository personRepository;
-    private final SQLiteDatabase db;
 
     public enum DetailStatus {
         SUCCESS,
@@ -23,10 +22,9 @@ public class AdminUserDetailsController {
 
     public record DetailResponse(DetailStatus status, String message) {}
 
-    public AdminUserDetailsController(UserRepository userRepository,PersonRepository personRepositor, SQLiteDatabase db) {
+    public AdminUserDetailsController(UserRepository userRepository,PersonRepository personRepositor) {
         this.userRepository = userRepository;
         this.personRepository=personRepositor;
-        this.db=db;
     }
     public DetailResponse updateUser(User user, String firstName, String lastName, String email, String phone, String genderStr, String majorStr, String profilePicturePath) {
         try {
@@ -35,7 +33,7 @@ public class AdminUserDetailsController {
             if (email == null || email.trim().isEmpty()) return new DetailResponse(DetailStatus.ERROR_VALIDATION, "Email is required.");
             if (phone == null || phone.trim().isEmpty()) return new DetailResponse(DetailStatus.ERROR_VALIDATION, "Phone number is required.");
             String cleanEmail = email.trim();
-            if (!user.getEmail().equalsIgnoreCase(cleanEmail) && personRepository.isEmailExists(db,cleanEmail)) {
+            if (!user.getEmail().equalsIgnoreCase(cleanEmail) && personRepository.isEmailExists(cleanEmail)) {
                 return new DetailResponse(DetailStatus.ERROR_VALIDATION, "This email is already registered to another account.");
             }
             user.setFirstName(firstName.trim());

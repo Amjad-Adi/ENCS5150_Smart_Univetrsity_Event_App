@@ -18,14 +18,14 @@ public class AdminRepository {
 
     public AdminRepository(DataBaseHelper dataBaseHelper){
         this.dataBaseHelper=dataBaseHelper;
-        personRepository=new PersonRepository();
+        personRepository=new PersonRepository(dataBaseHelper);
     }
 
     public void insert(Admin admin) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         db.beginTransaction();
         try {
-            personRepository.insert(db,admin);
+            personRepository.insert(admin);
             ContentValues contentValues = new ContentValues();
             contentValues.put(AdminContract.COLUMN_ID, admin.getId());
             contentValues.put(AdminContract.COLUMN_SALARY, admin.getSalary());
@@ -40,8 +40,6 @@ public class AdminRepository {
 
     public void update(Admin admin) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
-        db.beginTransaction();
-        personRepository.update(db, admin);
         ContentValues adminValues = new ContentValues();
         ContentValues personValues = new ContentValues();
         personValues.put(PersonContract.COLUMN_FIRST_NAME, admin.getFirstName());
@@ -52,6 +50,7 @@ public class AdminRepository {
         personValues.put(PersonContract.COLUMN_PROFILE_PICTURE_PATH, admin.getProfilePicturePath());
         adminValues.put(AdminContract.COLUMN_SALARY, admin.getSalary());
         adminValues.put(AdminContract.COLUMN_ROLE, admin.getRole().toString());
+        db.beginTransaction();
         try {
             if (db.update(PersonContract.TABLE_NAME, personValues, PersonContract.COLUMN_ID + " = ?", new String[]{String.valueOf(admin.getId())}) == 0)
                 throw new RuntimeException("No admin found with id " + admin.getId());

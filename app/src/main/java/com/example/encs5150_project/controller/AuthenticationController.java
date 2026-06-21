@@ -23,7 +23,6 @@ public class AuthenticationController {
     private final AdminRepository adminRepository;
     private final PasswordHashingAlgorithm passwordHashingAlgorithm;
     private final PersonRepository personRepository;
-    private final SQLiteDatabase db;
 
     public enum AuthStatus {
         SUCCESS_ADMIN,
@@ -44,7 +43,6 @@ public class AuthenticationController {
         this.userRepository = userRepository;
         this.adminRepository=adminRepository;
         this.passwordHashingAlgorithm = passwordHashingAlgorithm;
-        this.db=db;
     }
 
     public String getRememberedEmail() {
@@ -127,7 +125,7 @@ public class AuthenticationController {
         }
         try {
             User.validatePassword(password);
-            if (personRepository.isEmailExists(db,email)) {
+            if (personRepository.isEmailExists(email)) {
                 return new AuthResponse(AuthStatus.ERROR_VALIDATION, "This email is already registered");
             }
             PersonGender gender = PersonGender.valueOf(genderStr);
