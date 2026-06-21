@@ -8,6 +8,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.cloudinary.android.MediaManager;
 import com.example.encs5150_project.R;
@@ -25,6 +29,12 @@ public class IntroductionActivity extends AppCompatActivity implements FetchStat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_introduction);
+        ConstraintLayout mainIntro=findViewById(R.id.main);
+        ViewCompat.setOnApplyWindowInsetsListener(mainIntro, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
         ImageView splashLogo = findViewById(R.id.imageView_SplashLogo);
         LinearLayout introContent = findViewById(R.id.layout_IntroContent);
         Button buttonConnect = findViewById(R.id.button_Connect);

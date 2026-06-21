@@ -25,7 +25,7 @@ public class LoginFragment extends Fragment {
 
 
     public LoginFragment() {
-        // Required empty public constructor
+
     }
 
     @Override

@@ -8,6 +8,8 @@ import android.util.Log;
 import com.example.encs5150_project.model.entity.*;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 import com.example.encs5150_project.model.repository.database.contracts.EventContract;
+import com.example.encs5150_project.model.repository.database.contracts.PersonContract;
+
 import java.time.*;
 import java.util.*;
 
@@ -86,4 +88,5 @@ public class EventRepository{
         if (db.update(EventContract.TABLE_NAME,contentValues,EventContract.COLUMN_ID+" = ?",new String[]{String.valueOf(id)})==0)
             throw new RuntimeException("No event found with id " + id);
     }
+
 }

@@ -17,13 +17,16 @@
         android:title="Reservations" />
 
     <item
-        android:id="@+id/users"
-        android:icon="@drawable/users"
-        android:title="Users" />
+        android:id="@+id/accounts"
+        android:icon="@drawable/accounts"
+        android:title="Accounts" />
 
     <item
         android:id="@+id/profile"
         android:icon="@drawable/profile"
         android:title="Profile" />
-
+    <item
+        android:id="@+id/nav_log_out"
+        android:icon="@drawable/log_out"
+        android:title="Log Out" />
 </menu>

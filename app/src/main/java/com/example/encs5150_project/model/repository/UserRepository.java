@@ -50,6 +50,7 @@ public class UserRepository {
         personValues.put(PersonContract.COLUMN_EMAIL, user.getEmail());
         personValues.put(PersonContract.COLUMN_PASSWORD, user.getPassword());
         personValues.put(PersonContract.COLUMN_GENDER, user.getGender().name());
+        personValues.put(PersonContract.COLUMN_PROFILE_PICTURE_PATH, user.getProfilePicturePath());
         userValues.put(UserContract.COLUMN_MAJOR, user.getMajor().name());
         userValues.put(UserContract.COLUMN_PHONE_NUMBER, user.getPhoneNumber());
         db.beginTransaction();
@@ -126,12 +127,33 @@ public class UserRepository {
         }
     }
 
-    public boolean isEmailExists(String email) {
+    public List<User> search(String searchBy, boolean isAscending, String query) {
         SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT 1 FROM " + PersonContract.TABLE_NAME +
-                " WHERE " + PersonContract.COLUMN_EMAIL + " =?", new String[]{email});
-        boolean exists = cursor.moveToFirst();
-        cursor.close();
-        return exists;
+        String aliasedSearchBy;
+        if (searchBy.equals(UserContract.COLUMN_MAJOR) || searchBy.equals(UserContract.COLUMN_PHONE_NUMBER) || searchBy.equals(UserContract.COLUMN_ACCOUNT_STATUS))
+            aliasedSearchBy = "U." + searchBy;
+         else
+            aliasedSearchBy = "P." + searchBy;
+
+        Cursor cursor = db.rawQuery("SELECT P.*, U." + UserContract.COLUMN_MAJOR +
+                ", U." + UserContract.COLUMN_PHONE_NUMBER +
+                ", U." + UserContract.COLUMN_ACCOUNT_STATUS +
+                " FROM " + UserContract.TABLE_NAME + " U " +
+                " JOIN " + PersonContract.TABLE_NAME + " P ON U." + UserContract.COLUMN_ID + " = P." + PersonContract.COLUMN_ID +
+                " WHERE " + aliasedSearchBy + " LIKE ? " +
+                " ORDER BY " + aliasedSearchBy + " COLLATE NOCASE " + ((isAscending) ? "ASC" : "DESC"), new String[]{"%" + query + "%"});
+        List<User> userList = new ArrayList<>();
+        try {
+            int picIndex = cursor.getColumnIndex(PersonContract.COLUMN_PROFILE_PICTURE_PATH);
+            while (cursor.moveToNext()) {
+                User user = new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS))));
+                if (picIndex != -1 && !cursor.isNull(picIndex))
+                    user.setProfilePicturePath(cursor.getString(picIndex));
+                userList.add(user);
+            }
+            return userList;
+        } finally{
+            cursor.close();
+        }
     }
 }
