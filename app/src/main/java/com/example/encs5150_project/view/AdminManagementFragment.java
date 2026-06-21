@@ -94,7 +94,7 @@ public class AdminManagementFragment extends Fragment {
                 public void onClick(View v) {//I didn't apply Open Closed principle as i think its over-engineering for this app, But I would really encourage to add it in future.
                     Person currentPerson = items.get(holder.getAdapterPosition());
                     if (currentPerson instanceof User) {
-                        UserDetailBottomSheet bottomSheet = new UserDetailBottomSheet();
+                        AdminUserDetailBottomSheet bottomSheet = new AdminUserDetailBottomSheet();
                         AdminUserDetailsController detailController = ((AdminActivity) getActivity()).getAdminUserDetailsController();
                         bottomSheet.setSetupData((User) currentPerson, detailController);
                         bottomSheet.show(getParentFragmentManager(), "UserDetailSheet");

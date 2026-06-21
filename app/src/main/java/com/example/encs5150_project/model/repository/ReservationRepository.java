@@ -78,4 +78,22 @@ public class ReservationRepository{
         if (db.update(ReservationContract.TABLE_NAME,contentValues,ReservationContract.COLUMN_ID+" = ?",new String[]{String.valueOf(id)})==0)
             throw new RuntimeException("No reservation found with id " + id);
     }
+    public List<Reservation> search(String searchBy, boolean isAscending, String query) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        String orderByColumn = (searchBy == null || searchBy.trim().isEmpty()) ? ReservationContract.COLUMN_ID : searchBy;
+        Cursor cursor = db.rawQuery(
+                "SELECT * FROM " + ReservationContract.TABLE_NAME +
+                        " WHERE " + orderByColumn + " LIKE ? " +
+                        " ORDER BY " + orderByColumn + " COLLATE NOCASE " + (isAscending ? "ASC" : "DESC"),
+                new String[]{"%" + query + "%"});
+        List<Reservation> reservationList = new ArrayList<>();
+        try {
+            while(cursor.moveToNext()) {
+                reservationList.add(new Reservation(cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)),cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)),  ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))), cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)) , ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)),OffsetDateTime.parse(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))));
+            }
+            return reservationList;
+        } finally {
+            cursor.close();
+        }
+    }
 }

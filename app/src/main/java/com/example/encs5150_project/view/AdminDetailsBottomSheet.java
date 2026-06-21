@@ -2,6 +2,7 @@ package com.example.encs5150_project.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -55,7 +57,7 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
     private ShapeableImageView ivProfilePic;
     private ProgressBar progressBar;
     private LinearLayout llDefaultActions, llEditActions;
-    private MaterialButton btnEditMode, btnDisableAccount, btnCancelEdit, btnSaveAdmin;
+    private MaterialButton btnEditMode, btnAccountStatus, btnCancelEdit, btnSaveAdmin;
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -94,7 +96,7 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
         llDefaultActions = view.findViewById(R.id.llDefaultActions);
         llEditActions = view.findViewById(R.id.llEditActions);
         btnEditMode = view.findViewById(R.id.btnEditMode);
-        btnDisableAccount = view.findViewById(R.id.btnDisableAccount);
+        btnAccountStatus = view.findViewById(R.id.btnAccountStatus);
         btnCancelEdit = view.findViewById(R.id.btnCancelEdit);
         btnSaveAdmin = view.findViewById(R.id.btnSaveAdmin);
         btnChangePhoto = view.findViewById(R.id.tvChangePhotoAdmin);
@@ -114,7 +116,7 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
                 setEditable(false);
             }
         });
-        btnDisableAccount.setOnClickListener(new View.OnClickListener() {
+        btnAccountStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleStatusToggle();
@@ -169,7 +171,10 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
         boolean isEnabled = currentAdmin.getAccountStatus() == EntityStatus.ENABLED;
         tvStatus.setText("Status: " + currentAdmin.getAccountStatus().name());
         tvStatus.setTextColor(getResources().getColor(isEnabled ? R.color.success : R.color.error));
-        btnDisableAccount.setText(isEnabled ? "Disable" : "Enable");
+        int actionColor = ContextCompat.getColor(requireContext(), isEnabled ? R.color.error : R.color.success);
+        btnAccountStatus.setText(isEnabled ? "Disable" : "Enable");
+        btnAccountStatus.setTextColor(actionColor);
+        btnAccountStatus.setStrokeColor(ColorStateList.valueOf(actionColor));
         uploadedProfilePicUrl = currentAdmin.getProfilePicturePath();
         progressBar.setVisibility(View.VISIBLE);
         Glide.with(this)

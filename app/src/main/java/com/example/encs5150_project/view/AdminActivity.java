@@ -21,6 +21,7 @@ import com.example.encs5150_project.controller.AddAccountController;
 import com.example.encs5150_project.controller.AdminAddEventController;
 import com.example.encs5150_project.controller.AdminEventController;
 import com.example.encs5150_project.controller.AdminEventDetailsController;
+import com.example.encs5150_project.controller.AdminReservationController;
 import com.example.encs5150_project.controller.LogOutController;
 import com.example.encs5150_project.controller.AdminDetailsController;
 import com.example.encs5150_project.controller.AdminManagementController;
@@ -30,6 +31,7 @@ import com.example.encs5150_project.model.PasswordHashingAlgorithm;
 import com.example.encs5150_project.model.repository.AdminRepository;
 import com.example.encs5150_project.model.repository.EventRepository;
 import com.example.encs5150_project.model.repository.PersonRepository;
+import com.example.encs5150_project.model.repository.ReservationRepository;
 import com.example.encs5150_project.model.repository.UserRepository;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 import com.example.encs5150_project.model.repository.preferences.SharedPrefManager;
@@ -50,6 +52,7 @@ public class AdminActivity extends AppCompatActivity {
     private LogOutController logOutController;
     private AdminEventDetailsController adminEventDetailsController;
     private AdminAddEventController adminAddEventController;
+    private AdminReservationController adminReservationController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -191,5 +194,11 @@ public class AdminActivity extends AppCompatActivity {
             adminAddEventController = new AdminAddEventController(new EventRepository(DataBaseHelper.getInstance(this)));
         }
         return adminAddEventController;
+    }
+    public AdminReservationController getAdminReservationController() {
+        if (adminReservationController == null) {
+            adminReservationController = new AdminReservationController(new ReservationRepository(DataBaseHelper.getInstance(this)));
+        }
+        return adminReservationController;
     }
 }

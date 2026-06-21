@@ -46,6 +46,21 @@
             tools:text="4.8" />
 
         <TextView
+            android:id="@+id/tvEventStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/shape_pill_warning"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/tvAverageRating"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="ENABLED"
+            tools:textColor="@color/success" />
+
+        <TextView
             android:id="@+id/tvEventTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
