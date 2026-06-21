@@ -2,6 +2,7 @@ package com.example.encs5150_project.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -55,10 +57,9 @@ public class AdminEventDetailsBottomSheet extends BottomSheetDialogFragment impl
     private EventSummary eventSummary;
     private ShapeableImageView ivEventPic;
     private TextView tvChangePhoto, tvStatus, tvId;
-
     private TextInputEditText etTitle, etDescription, etCategory, etBookedSeats, etTotalSeats, etLocation, etDate, etTime;
     private LinearLayout llDefaultActions, llEditActions;
-    private MaterialButton btnDisableEvent, btnEditMode, btnCancelEdit, btnSaveEvent;
+    private MaterialButton btnAccountStatus, btnEditMode, btnCancelEdit, btnSaveEvent;
     private ProgressBar progressBar;
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
@@ -104,7 +105,7 @@ public class AdminEventDetailsBottomSheet extends BottomSheetDialogFragment impl
         etTime = view.findViewById(R.id.etEventTime);
         llDefaultActions = view.findViewById(R.id.llDefaultActions);
         llEditActions = view.findViewById(R.id.llEditActions);
-        btnDisableEvent = view.findViewById(R.id.btnDisableEvent);
+        btnAccountStatus = view.findViewById(R.id.btnAccountStatus);
         btnEditMode = view.findViewById(R.id.btnEditMode);
         btnCancelEdit = view.findViewById(R.id.btnCancelEdit);
         btnSaveEvent = view.findViewById(R.id.btnSaveEvent);
@@ -123,7 +124,7 @@ public class AdminEventDetailsBottomSheet extends BottomSheetDialogFragment impl
                 setEditable(false);
             }
         });
-        btnDisableEvent.setOnClickListener(new View.OnClickListener() {
+        btnAccountStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleStatusToggle();
@@ -165,9 +166,13 @@ public class AdminEventDetailsBottomSheet extends BottomSheetDialogFragment impl
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.US);
         etTime.setText(currentEvent.getTime().format(timeFormatter));
         tvId.setText("Event ID: #" + currentEvent.getId());
-        tvStatus.setText("Status: ACTIVE");
-        tvStatus.setTextColor(getResources().getColor(R.color.success));
-        btnDisableEvent.setText("Disable");
+        boolean isEnabled = currentEvent.getStatus() == com.example.encs5150_project.model.entity.EntityStatus.ENABLED;
+        tvStatus.setText("Status: " + currentEvent.getStatus().name());
+        tvStatus.setTextColor(getResources().getColor(isEnabled ? R.color.success : R.color.error));
+        int actionColor = ContextCompat.getColor(requireContext(), isEnabled ? R.color.error : R.color.success);
+        btnAccountStatus.setText(isEnabled ? "Disable" : "Enable");
+        btnAccountStatus.setTextColor(actionColor);
+        btnAccountStatus.setStrokeColor(ColorStateList.valueOf(actionColor));
         uploadedEventPicUrl = currentEvent.getImagePath();
         if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
         Glide.with(this)

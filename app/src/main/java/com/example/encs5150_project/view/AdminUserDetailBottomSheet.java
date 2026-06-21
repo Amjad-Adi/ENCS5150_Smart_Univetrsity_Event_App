@@ -42,7 +42,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class UserDetailBottomSheet extends BottomSheetDialogFragment implements UploadStatus {
+public class AdminUserDetailBottomSheet extends BottomSheetDialogFragment implements UploadStatus {
     private AdminUserDetailsController detailController;
     private ImageUploadController imageUploadController;
     private ImagePickerController imagePickerController;
@@ -64,7 +64,7 @@ public class UserDetailBottomSheet extends BottomSheetDialogFragment implements 
                 }
             });
 
-    public UserDetailBottomSheet() {}
+    public AdminUserDetailBottomSheet() {}
 
     public void setSetupData(User user, AdminUserDetailsController controller) {
         this.currentUser = user;

@@ -82,5 +82,18 @@
             app:layout_constraintStart_toStartOf="parent"
             tools:text="Oct 24, 2026  |  2 Seats" />
 
+        <TextView
+            android:id="@+id/tvResAdditionalInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textStyle="italic"
+            android:textColor="@color/hintColor"
+            android:textSize="13sp"
+            app:layout_constraintTop_toBottomOf="@id/tvResDetails"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Note: Requires wheelchair accessibility." />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

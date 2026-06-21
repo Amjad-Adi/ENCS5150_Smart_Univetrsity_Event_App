@@ -26,6 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Have questions or need assistance? Our support team is here to help. If you encounter any issues, experience technical problems, or need guidance using the system, please contact the system administrator through any of the options below. We will respond as soon as possible and do our best to assist you."
+        android:textAlignment="center"
+        android:gravity="center"
         android:textColor="@color/colorSecondary"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
