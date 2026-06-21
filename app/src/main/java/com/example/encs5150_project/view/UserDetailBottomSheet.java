@@ -2,6 +2,7 @@ package com.example.encs5150_project.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -28,6 +30,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.AdminUserDetailsController;
+import com.example.encs5150_project.controller.ImagePickerController;
 import com.example.encs5150_project.controller.ImageUploadController;
 import com.example.encs5150_project.model.entity.EntityStatus;
 import com.example.encs5150_project.model.entity.PersonGender;
@@ -43,6 +46,7 @@ import com.google.android.material.textfield.TextInputEditText;
 public class UserDetailBottomSheet extends BottomSheetDialogFragment implements UploadStatus {
     private AdminUserDetailsController detailController;
     private ImageUploadController imageUploadController;
+    private ImagePickerController imagePickerController;
     private User currentUser;
     private String uploadedProfilePicUrl = null;
     private TextInputEditText etFirstName, etLastName, etEmail, etPhone;
@@ -51,7 +55,7 @@ public class UserDetailBottomSheet extends BottomSheetDialogFragment implements 
     private ShapeableImageView ivProfilePic;
     private ProgressBar progressBar;
     private LinearLayout llDefaultActions, llEditActions;
-    private MaterialButton btnEditMode, btnDisableAccount, btnCancelEdit, btnSaveUser;
+    private MaterialButton btnEditMode, btnAccountStatus, btnCancelEdit, btnSaveUser;
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -90,7 +94,7 @@ public class UserDetailBottomSheet extends BottomSheetDialogFragment implements 
         llDefaultActions = view.findViewById(R.id.llDefaultActions);
         llEditActions = view.findViewById(R.id.llEditActions);
         btnEditMode = view.findViewById(R.id.btnEditMode);
-        btnDisableAccount = view.findViewById(R.id.btnDisableAccount);
+        btnAccountStatus = view.findViewById(R.id.btnAccountStatus);
         btnCancelEdit = view.findViewById(R.id.btnCancelEdit);
         btnSaveUser = view.findViewById(R.id.btnSaveUser);
         btnChangePhoto = view.findViewById(R.id.tvChangePhotoUser);
@@ -110,7 +114,7 @@ public class UserDetailBottomSheet extends BottomSheetDialogFragment implements 
                 setEditable(false);
             }
         });
-        btnDisableAccount.setOnClickListener(new View.OnClickListener() {
+        btnAccountStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleStatusToggle();
@@ -134,6 +138,9 @@ public class UserDetailBottomSheet extends BottomSheetDialogFragment implements 
                     showPhotoOptionsDialog();
                 }
             }
+        });
+        imagePickerController = new ImagePickerController(this, imageUri -> {
+            imageUploadController.handleImageSelected(requireContext(), imageUri);
         });
     }
 
@@ -159,8 +166,12 @@ public class UserDetailBottomSheet extends BottomSheetDialogFragment implements 
         tvId.setText("User ID: #" + currentUser.getId());
         boolean isEnabled = currentUser.getAccountStatus() == EntityStatus.ENABLED;
         tvStatus.setText("Status: " + currentUser.getAccountStatus().name());
-        tvStatus.setTextColor(getResources().getColor(isEnabled ? R.color.success : R.color.error));
-        btnDisableAccount.setText(isEnabled ? "Disable" : "Enable");
+        int statusColor = ContextCompat.getColor(requireContext(), isEnabled ? R.color.success : R.color.error);
+        tvStatus.setTextColor(statusColor);
+        int actionColor = ContextCompat.getColor(requireContext(), isEnabled ? R.color.error : R.color.success);
+        btnAccountStatus.setText(isEnabled ? "Disable" : "Enable");
+        btnAccountStatus.setTextColor(actionColor);
+        btnAccountStatus.setStrokeColor(ColorStateList.valueOf(actionColor));
         uploadedProfilePicUrl = currentUser.getProfilePicturePath();
         progressBar.setVisibility(View.VISIBLE);
         Glide.with(this)
@@ -229,15 +240,15 @@ public class UserDetailBottomSheet extends BottomSheetDialogFragment implements 
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Toast.makeText(getContext(), "Camera selected", Toast.LENGTH_SHORT).show();
+                imagePickerController.checkCameraPermissionAndLaunch();
             }
         });
+
         llGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                galleryLauncher.launch(intent);
+                imagePickerController.launchGallery();
             }
         });
         dialog.show();

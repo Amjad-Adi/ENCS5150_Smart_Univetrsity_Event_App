@@ -30,8 +30,12 @@ public class AddAccountController {
     public AddResponse addUser(String firstName, String lastName, String email, String phone, String password, String confirmPassword, String genderStr, String majorStr) {
         AddResponse basicValidation = validateBasicFields(firstName, lastName, email, password, confirmPassword, genderStr);
         if (basicValidation != null) return basicValidation;
-        if (phone.trim().isEmpty()) return new AddResponse(AddStatus.ERROR_VALIDATION, "Phone number is required");
-        if (majorStr.isEmpty() || majorStr.equals("Select Category")) return new AddResponse(AddStatus.ERROR_VALIDATION, "Please select a valid major");
+        if (phone == null || phone.trim().isEmpty()) {
+            return new AddResponse(AddStatus.ERROR_VALIDATION, "Phone number is required");
+        }
+        if (majorStr == null || majorStr.isEmpty() || majorStr.equals("Select Category")) {
+            return new AddResponse(AddStatus.ERROR_VALIDATION, "Please select a valid major");
+        }
         try {
             User.validatePassword(password);
             if (personRepository.isEmailExists(email)) {
@@ -41,6 +45,7 @@ public class AddAccountController {
             User newUser = new User(firstName, lastName, email, hashedPassword, PersonGender.valueOf(genderStr), UserMajor.valueOf(majorStr), phone, EntityStatus.ENABLED);
             userRepository.insert(newUser);
             return new AddResponse(AddStatus.SUCCESS, "User account created successfully");
+
         } catch (IllegalArgumentException e) {
             return new AddResponse(AddStatus.ERROR_VALIDATION, e.getMessage());
         } catch (Exception e) {
@@ -48,20 +53,26 @@ public class AddAccountController {
             return new AddResponse(AddStatus.ERROR_SYSTEM, "System error occurred");
         }
     }
+
     public AddResponse addAdmin(String firstName, String lastName, String email, String password, String confirmPassword, String genderStr, String salaryStr, String roleStr) {
         AddResponse basicValidation = validateBasicFields(firstName, lastName, email, password, confirmPassword, genderStr);
         if (basicValidation != null) return basicValidation;
-        if (salaryStr.trim().isEmpty()) return new AddResponse(AddStatus.ERROR_VALIDATION, "Salary is required");
-        if (roleStr.isEmpty()) return new AddResponse(AddStatus.ERROR_VALIDATION, "Role is required");
+        if (salaryStr == null || salaryStr.trim().isEmpty()) {
+            return new AddResponse(AddStatus.ERROR_VALIDATION, "Salary is required");
+        }
+        if (roleStr == null || roleStr.isEmpty()) {
+            return new AddResponse(AddStatus.ERROR_VALIDATION, "Role is required");
+        }
         try {
             double salary = Double.parseDouble(salaryStr);
             if (salary <= 0) return new AddResponse(AddStatus.ERROR_VALIDATION, "Salary must be greater than 0");
+
             User.validatePassword(password);
-            if (adminRepository.findByEmail(email) != null) {
-                return new AddResponse(AddStatus.ERROR_VALIDATION, "This email is already registered as an Admin");
+            if (personRepository.isEmailExists(email)) {
+                return new AddResponse(AddStatus.ERROR_VALIDATION, "This email is already registered");
             }
             String hashedPassword = passwordHashingAlgorithm.hashPassword(password);
-            Admin newAdmin = new Admin( firstName, lastName, email, hashedPassword, PersonGender.valueOf(genderStr), salary, AdminRole.valueOf(roleStr), EntityStatus.ENABLED);
+            Admin newAdmin = new Admin(firstName, lastName, email, hashedPassword, PersonGender.valueOf(genderStr), salary, AdminRole.valueOf(roleStr), EntityStatus.ENABLED);
             adminRepository.insert(newAdmin);
             return new AddResponse(AddStatus.SUCCESS, "Admin account created successfully");
         } catch (NumberFormatException e) {

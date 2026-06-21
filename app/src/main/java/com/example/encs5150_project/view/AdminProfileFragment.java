@@ -29,9 +29,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.AdminProfileController;
+import com.example.encs5150_project.controller.ImagePickerController;
 import com.example.encs5150_project.controller.ImageUploadController;
 import com.example.encs5150_project.model.entity.Admin;
-import com.example.encs5150_project.model.entity.AdminRole;
 import com.example.encs5150_project.model.entity.PersonGender;
 import com.example.encs5150_project.model.observer.UploadStatus;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -49,6 +49,7 @@ public class AdminProfileFragment extends Fragment implements UploadStatus {
 
     private AdminProfileController profileController;
     private ImageUploadController imageUploadController;
+    private ImagePickerController imagePickerController;
     private Admin currentAdmin;
     private String uploadedProfilePicUrl = null;
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
@@ -119,6 +120,9 @@ public class AdminProfileFragment extends Fragment implements UploadStatus {
             }
         });
         loadAdminData();
+        imagePickerController = new ImagePickerController(this, imageUri -> {
+            imageUploadController.handleImageSelected(requireContext(), imageUri);
+        });
     }
 
     private void loadAdminData() {
@@ -163,17 +167,17 @@ public class AdminProfileFragment extends Fragment implements UploadStatus {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Toast.makeText(getContext(), "Camera selected", Toast.LENGTH_SHORT).show();
-        }
-    });
+                imagePickerController.checkCameraPermissionAndLaunch();
+            }
+        });
+
         llGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                galleryLauncher.launch(intent);
+                imagePickerController.launchGallery();
             }
-    });
+        });
         dialog.show();
     }
     @Override

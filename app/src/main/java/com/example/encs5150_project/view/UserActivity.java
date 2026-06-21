@@ -2,6 +2,7 @@ package com.example.encs5150_project.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.activity.OnBackPressedCallback;
@@ -60,45 +61,48 @@ public class UserActivity extends AppCompatActivity {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.user_nav_home) {
-                replaceFragment(new UserHomeFragment(), "Home");
-            } else if (itemId == R.id.user_nav_events) {
-                replaceFragment(new UserEventsSectionFragment(), "Events");
-            } else if (itemId == R.id.user_nav_reservations) {
-                replaceFragment(new UserReservationSectionFragment(), "My Reservations");
-            } else if (itemId == R.id.user_nav_favorites) {
-                replaceFragment(new UserFavoritesSectionFragment(), "Favorites");
-            } else if (itemId == R.id.user_nav_special) {
-                replaceFragment(new UserSpecialSectionFragment(), "Special Section");
-            } else if (itemId == R.id.user_nav_profile) {
-                replaceFragment(new UserProfileFragment(), "Profile Management");
-            } else if (itemId == R.id.user_nav_contact) {
-                replaceFragment(new UserContactUsFragment(), "Contact Us");
-            }else if (itemId == R.id.user_nav_contact) {
-                replaceFragment(new UserContactUsFragment(), "Contact Us");
-            }else if (itemId == R.id.user_nav_log_out) {
-                drawerLayout.closeDrawer(GravityCompat.START);
-                drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
-                    @Override
-                    public void onDrawerClosed(@NonNull View drawerView) {
-                        super.onDrawerClosed(drawerView);
-                        drawerLayout.removeDrawerListener(this);
-                        if (logOutController != null) {
-                            logOutController.logout();
-                            Intent intent = new Intent(UserActivity.this, AuthenticationActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+                if (itemId == R.id.user_nav_home) {
+                    replaceFragment(new UserHomeFragment(), "Home");
+                } else if (itemId == R.id.user_nav_events) {
+                    replaceFragment(new UserEventsSectionFragment(), "Events");
+                } else if (itemId == R.id.user_nav_reservations) {
+                    replaceFragment(new UserReservationSectionFragment(), "My Reservations");
+                } else if (itemId == R.id.user_nav_favorites) {
+                    replaceFragment(new UserFavoritesSectionFragment(), "Favorites");
+                } else if (itemId == R.id.user_nav_special) {
+                    replaceFragment(new UserSpecialSectionFragment(), "Special Section");
+                } else if (itemId == R.id.user_nav_profile) {
+                    replaceFragment(new UserProfileFragment(), "Profile Management");
+                } else if (itemId == R.id.user_nav_contact) {
+                    replaceFragment(new UserContactUsFragment(), "Contact Us");
+                } else if (itemId == R.id.user_nav_log_out) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+                        @Override
+                        public void onDrawerClosed(@NonNull View drawerView) {
+                            super.onDrawerClosed(drawerView);
+                            drawerLayout.removeDrawerListener(this);
+                            if (logOutController != null) {
+                                logOutController.logout();
+                                Intent intent = new Intent(UserActivity.this, AuthenticationActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            }
                         }
-                    }
-                });
+                    });
+                    return true;
+                }
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
             }
-            return true;
         });
-    }
+}
 
     private void replaceFragment(Fragment fragment, String title) {
         getSupportFragmentManager().beginTransaction().replace(R.id.userFragment, fragment).commit();

@@ -1,66 +1,211 @@
 package com.example.encs5150_project.view;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.encs5150_project.R;
+import com.example.encs5150_project.controller.ImagePickerController;
+import com.example.encs5150_project.controller.ImageUploadController;
+import com.example.encs5150_project.controller.UserProfileController;
+import com.example.encs5150_project.model.entity.PersonGender;
+import com.example.encs5150_project.model.entity.User;
+import com.example.encs5150_project.model.observer.UploadStatus;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textfield.TextInputEditText;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link UserProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class UserProfileFragment extends Fragment {
+public class UserProfileFragment extends Fragment implements UploadStatus {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private TextInputEditText etFirstName, etLastName, etEmail, etPassword, etConfirmPassword;
+    private ProgressBar progressBar;
+    private AutoCompleteTextView actvGender;
+    private ShapeableImageView ivProfilePic;
+    private MaterialButton btnSave;
+    private UserProfileController profileController;
+    private ImageUploadController imageUploadController;
+    private ImagePickerController imagePickerController;
+    private User currentUser;
+    private String uploadedProfilePicUrl = null;
+    private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Uri selectedImage = result.getData().getData();
+                    imageUploadController.handleImageSelected(requireContext(), selectedImage);
+                }
+            });
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public UserProfileFragment() {}
 
-    public UserProfileFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileManagmentFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static UserProfileFragment newInstance(String param1, String param2) {
-        UserProfileFragment fragment = new UserProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_user_profile, container, false);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        etFirstName = view.findViewById(R.id.etProfileFirstName);
+        etLastName = view.findViewById(R.id.etProfileLastName);
+        etEmail = view.findViewById(R.id.etProfileEmail);
+        etPassword = view.findViewById(R.id.etProfilePassword);
+        etConfirmPassword = view.findViewById(R.id.etProfileConfirmPassword);
+        actvGender = view.findViewById(R.id.actvProfileGender);
+        ivProfilePic = view.findViewById(R.id.ivUserProfilePic);
+        btnSave = view.findViewById(R.id.btnSaveProfile);
+        progressBar = view.findViewById(R.id.progressBar);
+        String[] genders = {PersonGender.MALE.name(), PersonGender.FEMALE.name()};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, genders);
+        actvGender.setAdapter(adapter);
+        if (getActivity() != null && getActivity() instanceof UserActivity) {
+            profileController = ((UserActivity) getActivity()).getProfileController();
+        }
+        imageUploadController = new ImageUploadController(this);
+        ivProfilePic.setOnClickListener(v -> showPhotoOptionsDialog());
+        view.findViewById(R.id.tvChangePhoto).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPhotoOptionsDialog();
+            }
+        });
+        btnSave.setOnClickListener(v -> {
+            if (currentUser == null || profileController == null) return;
+            String firstName = etFirstName.getText().toString().trim();
+            String lastName = etLastName.getText().toString().trim();
+            String password = etPassword.getText().toString();
+            String confirmPassword = etConfirmPassword.getText().toString();
+            String genderStr = actvGender.getText().toString();
+            try {
+                currentUser.setFirstName(firstName);
+                currentUser.setLastName(lastName);
+                currentUser.setGender(PersonGender.valueOf(genderStr));
+                currentUser.setProfilePicturePath(uploadedProfilePicUrl);
+                UserProfileController.ProfileResponse response = profileController.updateProfile(currentUser, password, confirmPassword);
+                if (response.status() == UserProfileController.ProfileStatus.SUCCESS) {
+                    Toast.makeText(getActivity(), response.message(), Toast.LENGTH_SHORT).show();
+                    etPassword.setText("");
+                    etConfirmPassword.setText("");
+                } else {
+                    showError(response.message());
+                }
+            } catch (IllegalArgumentException e) {
+                showError(e.getMessage());
+            }
+        });
+        loadUserData();
+        imagePickerController = new ImagePickerController(this, imageUri -> {
+            imageUploadController.handleImageSelected(requireContext(), imageUri);
+        });
+    }
+
+    private void loadUserData() {
+        if (profileController == null) return;
+        currentUser = profileController.getCurrentUser();
+        if (currentUser != null) {
+            etFirstName.setText(currentUser.getFirstName());
+            etLastName.setText(currentUser.getLastName());
+            etEmail.setText(currentUser.getEmail());
+            actvGender.setText(currentUser.getGender().name(), false);
+            uploadedProfilePicUrl = currentUser.getProfilePicturePath();
+            if (uploadedProfilePicUrl != null && !uploadedProfilePicUrl.isEmpty()) {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+            Glide.with(this)
+                    .load(uploadedProfilePicUrl != null && !uploadedProfilePicUrl.isEmpty() ? uploadedProfilePicUrl : R.drawable.profile)
+                    .placeholder(R.drawable.profile)
+                    .error(R.drawable.profile)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            progressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(ivProfilePic);
         }
     }
 
+    private void showPhotoOptionsDialog() {
+        BottomSheetDialog dialog = new BottomSheetDialog(requireContext());
+        View sheetView = getLayoutInflater().inflate(R.layout.image_picker, null);
+        dialog.setContentView(sheetView);
+        LinearLayout llCamera = sheetView.findViewById(R.id.llOptionCamera);
+        LinearLayout llGallery = sheetView.findViewById(R.id.llOptionGallery);
+        llCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                imagePickerController.checkCameraPermissionAndLaunch();
+            }
+        });
+
+        llGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                imagePickerController.launchGallery();
+            }
+        });
+        dialog.show();
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_profile, container, false);
+    public void showProgress() {
+        if (!isAdded()) return;
+        btnSave.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        if (!isAdded()) return;
+        btnSave.setEnabled(true);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onUploadSuccess(String imageUrl) {
+        if (!isAdded()) return;
+        hideProgress();
+        uploadedProfilePicUrl = imageUrl;
+        Glide.with(this)
+                .load(imageUrl)
+                .into(ivProfilePic);
+        Toast.makeText(getContext(), "Image uploaded successfully.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showError(String message) {
+        if (!isAdded()) return;
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }
