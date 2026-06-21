@@ -175,7 +175,7 @@ public class AdminManagementFragment extends Fragment {
         fabAddPerson.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddAccountBottomSheet bottomSheet = new AddAccountBottomSheet();
+                AdminAddAccountBottomSheet bottomSheet = new AdminAddAccountBottomSheet();
                 AdminActivity parentActivity = (AdminActivity) getActivity();
                 if (parentActivity != null) {
                     AddAccountController addController = parentActivity.getAddAccountController();

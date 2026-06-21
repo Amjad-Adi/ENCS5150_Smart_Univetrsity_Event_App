@@ -6,7 +6,6 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +74,7 @@ public class UserDetailBottomSheet extends BottomSheetDialogFragment implements 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.bottom_sheet_user_details, container, false);
+        return inflater.inflate(R.layout.bottom_sheet_admin_user_details, container, false);
     }
 
     @Override

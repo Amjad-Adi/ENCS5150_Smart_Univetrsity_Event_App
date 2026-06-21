@@ -13,7 +13,7 @@ import com.example.encs5150_project.model.observer.FetchStatus;
 import java.util.List;
 
 public class IntroductionController implements APIFetchObserver {
-    private final String SERVER_URL="https://mocki.io/v1/af1b6be0-61a9-464f-9d02-178bc5617b28";
+    private final String SERVER_URL="https://mocki.io/v1/624452a5-95d6-41d9-bb60-7fa2e1d2d4de";
     private final EventRepository eventRepository;
     private final FetchStatus fetchStatus;
     public IntroductionController(EventRepository eventRepository,FetchStatus fetchStatus) {

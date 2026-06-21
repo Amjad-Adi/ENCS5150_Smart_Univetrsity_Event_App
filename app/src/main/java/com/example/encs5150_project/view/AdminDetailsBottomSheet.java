@@ -107,7 +107,6 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
                 setEditable(true);
             }
         });
-
         btnCancelEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,28 +114,24 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
                 setEditable(false);
             }
         });
-
         btnDisableAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleStatusToggle();
             }
         });
-
         btnSaveAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 handleSave();
             }
         });
-
         btnChangePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showPhotoOptionsDialog();
             }
         });
-
         ivProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,15 +166,12 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
         actvGender.setText(currentAdmin.getGender().name(), false);
         actvRole.setText(currentAdmin.getRole().name(), false);
         tvId.setText("Admin ID: #" + currentAdmin.getId());
-
         boolean isEnabled = currentAdmin.getAccountStatus() == EntityStatus.ENABLED;
         tvStatus.setText("Status: " + currentAdmin.getAccountStatus().name());
         tvStatus.setTextColor(getResources().getColor(isEnabled ? R.color.success : R.color.error));
         btnDisableAccount.setText(isEnabled ? "Disable" : "Enable");
-
         uploadedProfilePicUrl = currentAdmin.getProfilePicturePath();
         progressBar.setVisibility(View.VISIBLE);
-
         Glide.with(this)
                 .load(uploadedProfilePicUrl != null && !uploadedProfilePicUrl.isEmpty() ? uploadedProfilePicUrl : R.drawable.profile)
                 .placeholder(R.drawable.profile)
@@ -212,16 +204,7 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
     }
 
     private void handleSave() {
-        AdminDetailsController.DetailResponse response = detailController.updateAdmin(
-                currentAdmin,
-                etFirstName.getText().toString(),
-                etLastName.getText().toString(),
-                etEmail.getText().toString(),
-                etSalary.getText().toString(),
-                actvGender.getText().toString(),
-                actvRole.getText().toString(),
-                uploadedProfilePicUrl
-        );
+        AdminDetailsController.DetailResponse response = detailController.updateAdmin(currentAdmin, etFirstName.getText().toString(), etLastName.getText().toString(), etEmail.getText().toString(), etSalary.getText().toString(), actvGender.getText().toString(), actvRole.getText().toString(), uploadedProfilePicUrl);
 
         Toast.makeText(getContext(), response.message(), Toast.LENGTH_SHORT).show();
         if (response.status() == AdminDetailsController.DetailStatus.SUCCESS) {
@@ -252,7 +235,6 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
         dialog.setContentView(sheetView);
         LinearLayout llCamera = sheetView.findViewById(R.id.llOptionCamera);
         LinearLayout llGallery = sheetView.findViewById(R.id.llOptionGallery);
-
         llCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -260,7 +242,6 @@ public class AdminDetailsBottomSheet extends BottomSheetDialogFragment implement
                 imagePickerController.checkCameraPermissionAndLaunch();
             }
         });
-
         llGallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -20,7 +20,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputEditText;
 
-public class AddAccountBottomSheet extends BottomSheetDialogFragment {
+public class AdminAddAccountBottomSheet extends BottomSheetDialogFragment {
     private AddAccountController controller;
     private boolean isCreatingAdmin = false;
     private boolean canManageAdmins = false;
@@ -31,7 +31,7 @@ public class AddAccountBottomSheet extends BottomSheetDialogFragment {
     private MaterialButtonToggleGroup toggleGroup;
     private MaterialButton btnSubmit;
 
-    public AddAccountBottomSheet() {}
+    public AdminAddAccountBottomSheet() {}
 
     public void setSetupData(AddAccountController controller, boolean canManageAdmins) {
         this.controller = controller;
@@ -41,7 +41,7 @@ public class AddAccountBottomSheet extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.bottom_sheet_add_account, container, false);
+        return inflater.inflate(R.layout.bottom_sheet_admin_add_account, container, false);
     }
 
     @Override

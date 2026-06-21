@@ -13,7 +13,7 @@ public class Event {
     private int totalSeats;
     private String imagePath;
     private EntityStatus status;
-    public Event( String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats, String imagePath,EntityStatus status) {
+    public Event( String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats,EntityStatus status) {
         this.title = title;
         this.description=description;
         this.category = category;
@@ -21,10 +21,9 @@ public class Event {
         this.time = time;
         this.location = location;
         this.totalSeats = totalSeats;
-        this.imagePath = imagePath;
         this.status=status;
     }
-    public Event(long id, String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats, String imagePath,EntityStatus status) {
+    public Event(long id, String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats,EntityStatus status) {
         this.id = id;
         this.title = title;
         this.description=description;
@@ -33,7 +32,29 @@ public class Event {
         this.time = time;
         this.location = location;
         this.totalSeats = totalSeats;
-        this.imagePath = imagePath;
+        this.status=status;
+    }
+    public Event( String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats,String imagePath,EntityStatus status) {
+        this.title = title;
+        this.description=description;
+        this.category = category;
+        this.date = date;
+        this.time = time;
+        this.location = location;
+        this.totalSeats = totalSeats;
+        this.imagePath=imagePath;
+        this.status=status;
+    }
+    public Event(long id, String title,String description, String category, LocalDate date, LocalTime time, String location, int totalSeats,String imagePath,EntityStatus status) {
+        this.id = id;
+        this.title = title;
+        this.description=description;
+        this.category = category;
+        this.date = date;
+        this.time = time;
+        this.location = location;
+        this.totalSeats = totalSeats;
+        this.imagePath=imagePath;
         this.status=status;
     }
 

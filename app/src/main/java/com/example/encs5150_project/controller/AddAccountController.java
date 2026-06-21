@@ -66,7 +66,6 @@ public class AddAccountController {
         try {
             double salary = Double.parseDouble(salaryStr);
             if (salary <= 0) return new AddResponse(AddStatus.ERROR_VALIDATION, "Salary must be greater than 0");
-
             User.validatePassword(password);
             if (personRepository.isEmailExists(email)) {
                 return new AddResponse(AddStatus.ERROR_VALIDATION, "This email is already registered");

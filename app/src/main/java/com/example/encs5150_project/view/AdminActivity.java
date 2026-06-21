@@ -18,6 +18,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.AddAccountController;
+import com.example.encs5150_project.controller.AdminAddEventController;
+import com.example.encs5150_project.controller.AdminEventController;
+import com.example.encs5150_project.controller.AdminEventDetailsController;
 import com.example.encs5150_project.controller.LogOutController;
 import com.example.encs5150_project.controller.AdminDetailsController;
 import com.example.encs5150_project.controller.AdminManagementController;
@@ -25,6 +28,7 @@ import com.example.encs5150_project.controller.AdminProfileController;
 import com.example.encs5150_project.controller.AdminUserDetailsController;
 import com.example.encs5150_project.model.PasswordHashingAlgorithm;
 import com.example.encs5150_project.model.repository.AdminRepository;
+import com.example.encs5150_project.model.repository.EventRepository;
 import com.example.encs5150_project.model.repository.PersonRepository;
 import com.example.encs5150_project.model.repository.UserRepository;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
@@ -42,8 +46,10 @@ public class AdminActivity extends AppCompatActivity {
     private AdminUserDetailsController adminUserDetailsController;
     private AddAccountController addAccountController;
     private AdminDetailsController adminDetailsController;
+    private AdminEventController adminEventController;
     private LogOutController logOutController;
-
+    private AdminEventDetailsController adminEventDetailsController;
+    private AdminAddEventController adminAddEventController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -167,5 +173,23 @@ public class AdminActivity extends AppCompatActivity {
             adminDetailsController = new AdminDetailsController(new AdminRepository(DataBaseHelper.getInstance(this)));
         }
         return adminDetailsController;
+    }
+    public AdminEventController getAdminEventController() {
+        if (adminEventController == null) {
+            adminEventController = new AdminEventController(new EventRepository(DataBaseHelper.getInstance(this)));
+        }
+        return adminEventController;
+    }
+    public AdminEventDetailsController getAdminEventDetailsController() {
+        if (adminEventDetailsController == null) {
+            adminEventDetailsController = new AdminEventDetailsController(new EventRepository(DataBaseHelper.getInstance(this)));
+        }
+        return adminEventDetailsController;
+    }
+    public AdminAddEventController getAdminAddEventController() {
+        if (adminAddEventController == null) {
+            adminAddEventController = new AdminAddEventController(new EventRepository(DataBaseHelper.getInstance(this)));
+        }
+        return adminAddEventController;
     }
 }
