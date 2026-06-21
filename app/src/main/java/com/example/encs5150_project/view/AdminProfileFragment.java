@@ -45,7 +45,7 @@ public class AdminProfileFragment extends Fragment implements UploadStatus {
     private ProgressBar progressBar;
     private AutoCompleteTextView actvGender;
     private ShapeableImageView ivProfilePic;
-    private MaterialButton btnSave, btnLogout;
+    private MaterialButton btnSave;
 
     private AdminProfileController profileController;
     private ImageUploadController imageUploadController;
@@ -78,7 +78,6 @@ public class AdminProfileFragment extends Fragment implements UploadStatus {
         actvGender = view.findViewById(R.id.actvProfileGender);
         ivProfilePic = view.findViewById(R.id.ivAdminProfilePic);
         btnSave = view.findViewById(R.id.btnSaveProfile);
-        btnLogout = view.findViewById(R.id.btnLogout);
         progressBar = view.findViewById(R.id.progressBar);
         etLastName.setEnabled(true);
         etLastName.setFocusableInTouchMode(true);
@@ -116,18 +115,6 @@ public class AdminProfileFragment extends Fragment implements UploadStatus {
                     }
                 } catch (IllegalArgumentException e) {
                     showError(e.getMessage());
-                }
-            }
-        });
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (profileController != null) {
-                    profileController.logout();
-                    Intent intent = new Intent(getActivity(), AuthenticationActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    getActivity().finish();
                 }
             }
         });

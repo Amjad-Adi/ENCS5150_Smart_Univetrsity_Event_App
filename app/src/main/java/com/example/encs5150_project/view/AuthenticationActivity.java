@@ -30,7 +30,7 @@ public class AuthenticationActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        controller = new AuthenticationController(SharedPrefManager.getInstance(this),new PersonRepository(),new UserRepository(DataBaseHelper.getInstance(this)),new AdminRepository(DataBaseHelper.getInstance(this)),DataBaseHelper.getInstance(this).getReadableDatabase(),new PasswordHashingAlgorithm());
+        controller = new AuthenticationController(SharedPrefManager.getInstance(this),new PersonRepository(DataBaseHelper.getInstance(this)),new UserRepository(DataBaseHelper.getInstance(this)),new AdminRepository(DataBaseHelper.getInstance(this)),DataBaseHelper.getInstance(this).getReadableDatabase(),new PasswordHashingAlgorithm());
         if (savedInstanceState == null) {
             loadFragment(new LoginFragment());
         }

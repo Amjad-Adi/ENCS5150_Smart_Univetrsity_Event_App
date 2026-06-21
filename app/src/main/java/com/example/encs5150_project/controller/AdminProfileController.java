@@ -52,7 +52,4 @@ public class AdminProfileController {
             return new ProfileResponse(ProfileStatus.ERROR_SYSTEM, "An error occurred while updating the profile.");
         }
     }
-    public void logout() {
-        sharedPrefManager.writeString(PreferencesConstants.KEY_SESSION_EMAIL, null);
-    }
 }

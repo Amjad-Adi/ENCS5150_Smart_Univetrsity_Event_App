@@ -1,5 +1,6 @@
 package com.example.encs5150_project.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.AddAccountController;
+import com.example.encs5150_project.controller.LogOutController;
 import com.example.encs5150_project.controller.AdminDetailsController;
 import com.example.encs5150_project.controller.AdminManagementController;
 import com.example.encs5150_project.controller.AdminProfileController;
@@ -40,6 +42,7 @@ public class AdminActivity extends AppCompatActivity {
     private AdminUserDetailsController adminUserDetailsController;
     private AddAccountController addAccountController;
     private AdminDetailsController adminDetailsController;
+    private LogOutController logOutController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +57,11 @@ public class AdminActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
         toolbar = findViewById(R.id.toolbar);
+        logOutController =new LogOutController(SharedPrefManager.getInstance(this));
         setupDrawer();
         setupBackPressHandling();
         if (savedInstanceState == null) {
-            navigationView.setCheckedItem(R.id.home);
+            navigationView.setCheckedItem(R.id.admin_nav_home);
             replaceFragment(new AdminHomeFragment(), "Admin Home");
         }
     }
@@ -71,19 +75,34 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
-                if (itemId == R.id.home) {
+                if (itemId == R.id.admin_nav_home) {
                     replaceFragment(new AdminHomeFragment(), "Admin Home");
-                } else if (itemId == R.id.events) {
+                } else if (itemId == R.id.admin_nav_events) {
                     replaceFragment(new AdminEventsFragment(), "Manage Events");
-                } else if (itemId == R.id.reservations) {
+                } else if (itemId == R.id.admin_nav_reservations) {
                     replaceFragment(new AdminReservationsFragment(), "Reservations");
-                } else if (itemId == R.id.accounts) {
+                } else if (itemId == R.id.admin_nav_accounts) {
                     replaceFragment(new AdminManagementFragment(), "Manage Accounts");
-                } else if (itemId == R.id.profile) {
+                } else if (itemId == R.id.admin_nav_profile) {
                     replaceFragment(new AdminProfileFragment(), "My Profile");
+                }else if (itemId == R.id.admin_nav_log_out) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                    drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+                        @Override
+                        public void onDrawerClosed(@NonNull View drawerView) {
+                            super.onDrawerClosed(drawerView);
+                            drawerLayout.removeDrawerListener(this);
+                            if (logOutController != null) {
+                                logOutController.logout();
+                                Intent intent = new Intent(AdminActivity.this, AuthenticationActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            }
+                        }
+                    });
                 }
-
-                drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }
         });
@@ -123,7 +142,7 @@ public class AdminActivity extends AppCompatActivity {
         }
         return profileController;
     }
-    public AdminManagementController getAdminController() {
+    public AdminManagementController getLogOutController() {
         if (managementController == null) {
             managementController = new AdminManagementController(new UserRepository(DataBaseHelper.getInstance(this)),new AdminRepository(DataBaseHelper.getInstance(this)), SharedPrefManager.getInstance(this));
         }
@@ -131,13 +150,13 @@ public class AdminActivity extends AppCompatActivity {
     }
     public AdminUserDetailsController getAdminUserDetailsController() {
         if (adminUserDetailsController == null) {
-            adminUserDetailsController = new AdminUserDetailsController(new UserRepository(DataBaseHelper.getInstance(this)),new PersonRepository(),DataBaseHelper.getInstance(this).getReadableDatabase());
+            adminUserDetailsController = new AdminUserDetailsController(new UserRepository(DataBaseHelper.getInstance(this)),new PersonRepository(DataBaseHelper.getInstance(this)));
         }
         return adminUserDetailsController;
     }
     public AddAccountController getAddAccountController() {
         if (addAccountController == null) {
-            addAccountController = new AddAccountController(new UserRepository(DataBaseHelper.getInstance(this)),new AdminRepository(DataBaseHelper.getInstance(this)),new PasswordHashingAlgorithm());
+            addAccountController = new AddAccountController(new UserRepository(DataBaseHelper.getInstance(this)),new AdminRepository(DataBaseHelper.getInstance(this)),new PersonRepository(DataBaseHelper.getInstance(this)),new PasswordHashingAlgorithm());
         }
         return addAccountController;
     }
