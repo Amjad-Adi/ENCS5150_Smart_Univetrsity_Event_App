@@ -95,13 +95,11 @@ public class AdminProfileFragment extends Fragment implements UploadStatus {
             @Override
             public void onClick(View v) {
                 if (currentAdmin == null || profileController == null) return;
-
                 String firstName = etFirstName.getText().toString().trim();
                 String lastName = etLastName.getText().toString().trim();
                 String password = etPassword.getText().toString();
                 String confirmPassword = etConfirmPassword.getText().toString();
                 String genderStr = actvGender.getText().toString();
-
                 try {
                     currentAdmin.setFirstName(firstName);
                     currentAdmin.setLastName(lastName);
@@ -109,7 +107,6 @@ public class AdminProfileFragment extends Fragment implements UploadStatus {
                     currentAdmin.setProfilePicturePath(uploadedProfilePicUrl);
                     Log.d("ImageDebug", "2. Sending to DB. URL attached to currentAdmin is: [" + currentAdmin.getProfilePicturePath() + "]");
                     AdminProfileController.ProfileResponse response = profileController.updateProfile(currentAdmin, password, confirmPassword);
-
                     if (response.status() == AdminProfileController.ProfileStatus.SUCCESS) {
                         Toast.makeText(getActivity(), response.message(), Toast.LENGTH_SHORT).show();
                         etPassword.setText("");
@@ -117,7 +114,6 @@ public class AdminProfileFragment extends Fragment implements UploadStatus {
                     } else {
                         showError(response.message());
                     }
-
                 } catch (IllegalArgumentException e) {
                     showError(e.getMessage());
                 }
@@ -147,7 +143,9 @@ public class AdminProfileFragment extends Fragment implements UploadStatus {
                 etEmail.setText(currentAdmin.getEmail());
                 actvGender.setText(currentAdmin.getGender().name(), false);
                 uploadedProfilePicUrl = currentAdmin.getProfilePicturePath();
-                progressBar.setVisibility(View.VISIBLE);
+                if(uploadedProfilePicUrl != null && !uploadedProfilePicUrl.isEmpty()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
                 Glide.with(this)
                         .load(uploadedProfilePicUrl != null && !uploadedProfilePicUrl.isEmpty() ? uploadedProfilePicUrl : R.drawable.profile)
                         .placeholder(R.drawable.profile)

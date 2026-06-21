@@ -16,18 +16,14 @@
             android:id="@+id/nav_reservations"
             android:icon="@drawable/reservations"
             android:title="My Reservations" />
-
-        <item
-            android:id="@+id/nav_users"
-            android:icon="@drawable/users"
-            android:title="Users" />
-
         <item
             android:id="@+id/nav_favorites"
+            android:icon="@drawable/favourite"
             android:title="Favorites" />
 
         <item
             android:id="@+id/nav_special"
+            android:icon="@drawable/special_section"
             android:title="Special Section" />
 
         <item
@@ -37,11 +33,12 @@
 
         <item
             android:id="@+id/nav_contact"
+            android:icon="@drawable/contact_us"
             android:title="Contact Us" />
-
         <item
-            android:id="@+id/nav_logout"
-            android:title="Logout" />
+            android:id="@+id/nav_log_out"
+            android:icon="@drawable/log_out"
+            android:title="Log Out" />
 
     </group>
 </menu>

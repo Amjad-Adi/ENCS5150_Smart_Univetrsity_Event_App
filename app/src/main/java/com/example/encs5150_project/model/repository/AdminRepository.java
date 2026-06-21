@@ -41,14 +41,23 @@ public class AdminRepository {
     public void update(Admin admin) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         db.beginTransaction();
-        try{
-            personRepository.update(db,admin);
-            ContentValues adminValues=new ContentValues();
-            adminValues.put(AdminContract.COLUMN_SALARY, admin.getSalary());
-            adminValues.put(AdminContract.COLUMN_ROLE, admin.getRole().toString());
-            if(db.update(AdminContract.TABLE_NAME,adminValues,AdminContract.COLUMN_ID+" = ?",new String[]{String.valueOf(admin.getId())})==0)
+        personRepository.update(db, admin);
+        ContentValues adminValues = new ContentValues();
+        ContentValues personValues = new ContentValues();
+        personValues.put(PersonContract.COLUMN_FIRST_NAME, admin.getFirstName());
+        personValues.put(PersonContract.COLUMN_LAST_NAME, admin.getLastName());
+        personValues.put(PersonContract.COLUMN_EMAIL, admin.getEmail());
+        personValues.put(PersonContract.COLUMN_PASSWORD, admin.getPassword());
+        personValues.put(PersonContract.COLUMN_GENDER, admin.getGender().name());
+        personValues.put(PersonContract.COLUMN_PROFILE_PICTURE_PATH, admin.getProfilePicturePath());
+        adminValues.put(AdminContract.COLUMN_SALARY, admin.getSalary());
+        adminValues.put(AdminContract.COLUMN_ROLE, admin.getRole().toString());
+        try {
+            if (db.update(PersonContract.TABLE_NAME, personValues, PersonContract.COLUMN_ID + " = ?", new String[]{String.valueOf(admin.getId())}) == 0)
                 throw new RuntimeException("No admin found with id " + admin.getId());
-            db.setTransactionSuccessful();
+            if (db.update(AdminContract.TABLE_NAME, adminValues, AdminContract.COLUMN_ID + " = ?", new String[]{String.valueOf(admin.getId())}) == 0)
+                throw new RuntimeException("No admin found with id " + admin.getId());
+                db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
         }
@@ -125,6 +134,35 @@ public class AdminRepository {
                 admin.setProfilePicturePath(cursor.getString(picIndex));
             }
             return admin;
+        } finally {
+            cursor.close();
+        }
+    }
+    public List<Admin> search(String searchBy, boolean isAscending, String query) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        String aliasedSearchBy;
+        if (searchBy.equals(AdminContract.COLUMN_SALARY) || searchBy.equals(AdminContract.COLUMN_ROLE) || searchBy.equals(AdminContract.COLUMN_ACCOUNT_STATUS))
+            aliasedSearchBy = "A." + searchBy;
+        else
+            aliasedSearchBy = "P." + searchBy;
+        Cursor cursor = db.rawQuery("SELECT P.*, A." + AdminContract.COLUMN_SALARY +
+                ", A." + AdminContract.COLUMN_ROLE +
+                ", A." + AdminContract.COLUMN_ACCOUNT_STATUS +
+                " FROM " + AdminContract.TABLE_NAME + " A " +
+                " JOIN " + PersonContract.TABLE_NAME + " P ON A." + AdminContract.COLUMN_ID + " = P." + PersonContract.COLUMN_ID +
+                " WHERE " + aliasedSearchBy + " LIKE ? " +
+                " ORDER BY " + aliasedSearchBy + " COLLATE NOCASE " + ((isAscending) ? "ASC" : "DESC"), new String[]{"%" + query + "%"});
+
+        List<Admin> adminList = new ArrayList<>();
+        try {
+            int picIndex = cursor.getColumnIndex(PersonContract.COLUMN_PROFILE_PICTURE_PATH);
+            while(cursor.moveToNext()) {
+                Admin admin = new Admin(cursor.getLong(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), cursor.getDouble(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_SALARY)), AdminRole.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ROLE))), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(AdminContract.COLUMN_ACCOUNT_STATUS))));
+                if (picIndex != -1 && !cursor.isNull(picIndex))
+                    admin.setProfilePicturePath(cursor.getString(picIndex));
+                adminList.add(admin);
+            }
+            return adminList;
         } finally {
             cursor.close();
         }

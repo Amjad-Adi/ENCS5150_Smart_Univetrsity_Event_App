@@ -74,7 +74,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 .append(EventContract.COLUMN_TIME).append(" TEXT NOT NULL, ")//SQLite neither have TIME type
                 .append(EventContract.COLUMN_LOCATION).append(" TEXT NOT NULL, ")
                 .append(EventContract.COLUMN_TOTAL_SEATS).append(" INTEGER NOT NULL CHECK(").append(EventContract.COLUMN_TOTAL_SEATS).append(" > 0), ")
-                .append(EventContract.COLUMN_IMAGE_PATH).append(" TEXT NOT NULL DEFAULT '").append(EventContract.DEFAULT_IMAGE_PATH).append("', ")
+                .append(EventContract.COLUMN_IMAGE_PATH).append(" TEXT DEFAULT '").append(EventContract.DEFAULT_IMAGE_PATH).append("', ")
                 .append(EventContract.COLUMN_STATUS).append(" TEXT NOY NULL DEFAULT '").append(EntityStatus.ENABLED.name()).append("' CHECK(").append(EventContract.COLUMN_STATUS).append(" IN ('").append(EntityStatus.ENABLED.name()).append("', '").append(EntityStatus.DISABLED.name()).append("')))").toString());
     }
     private void createPersonTableSQL(SQLiteDatabase db){
@@ -87,7 +87,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                         .append(PersonContract.COLUMN_EMAIL).append(" TEXT NOT NULL UNIQUE, ")
                         .append(PersonContract.COLUMN_PASSWORD).append(" TEXT NOT NULL, ")
                         .append(PersonContract.COLUMN_GENDER).append(" TEXT NOT NULL CHECK(").append(PersonContract.COLUMN_GENDER).append(" IN ('").append(PersonGender.MALE.name()).append("', '").append(PersonGender.FEMALE.name()).append("')), ")
-                        .append(PersonContract.COLUMN_PROFILE_PICTURE_PATH).append(" TEXT NOT NULL DEFAULT '").append(PersonContract.DEFAULT_PROFILE_PICTURE_PATH).append("')").toString());
+                        .append(PersonContract.COLUMN_PROFILE_PICTURE_PATH).append(" TEXT DEFAULT '").append(PersonContract.DEFAULT_PROFILE_PICTURE_PATH).append("')").toString());
     }
     private void createUserTableSQL(SQLiteDatabase db){
         StringBuilder sqlStringBuilder=new StringBuilder();
