@@ -24,7 +24,7 @@ public class ReservationRepository {
         this.dataBaseHelper = dataBaseHelper;
     }
 
-    private OffsetDateTime parseDateSafely(String dateString) {
+    private OffsetDateTime parseDate(String dateString) {
         if (dateString == null) return null;
         try {
             LocalDateTime localDateTime = LocalDateTime.parse(dateString, SQLITE_FORMATTER);
@@ -79,7 +79,7 @@ public class ReservationRepository {
                     cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)),
                     ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),
                     cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)),
-                    parseDateSafely(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
+                    parseDate(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
             );
         } finally {
             cursor.close();
@@ -100,7 +100,7 @@ public class ReservationRepository {
                         cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)),
                         ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),
                         cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)),
-                        parseDateSafely(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
+                        parseDate(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
                 ));
             }
             return reservationList;
@@ -137,7 +137,7 @@ public class ReservationRepository {
                         cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)),
                         ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),
                         cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)),
-                        parseDateSafely(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
+                        parseDate(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
                 ));
             }
             return reservationList;
@@ -172,7 +172,7 @@ public class ReservationRepository {
         List<UserReservationSummary> summaryList = new ArrayList<>();
         try {
             while (cursor.moveToNext()) {
-                Reservation reservation = new Reservation(cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)), ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))), cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)), ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))), cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)), parseDateSafely(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE))));
+                Reservation reservation = new Reservation(cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)), ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))), cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)), ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))), cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)), parseDate(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE))));
                 String eventTitle = cursor.getString(cursor.getColumnIndexOrThrow("event_title"));
                 summaryList.add(new UserReservationSummary(reservation, eventTitle));
             }
@@ -180,5 +180,117 @@ public class ReservationRepository {
         } finally {
             cursor.close();
         }
+    }
+    public int getTotalAttendeesCount() {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT SUM(" + ReservationContract.COLUMN_PARTICIPATION_COUNT + ") " +
+                        "FROM " + ReservationContract.TABLE_NAME,
+                null
+        );
+
+        try {
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0);
+            }
+            return 0;
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public Map<Integer, Integer> getDailyReservationsForMonth(String yearMonth) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        Map<Integer, Integer> dailyStats = new HashMap<>();
+        String sql = "SELECT strftime('%d', " + ReservationContract.COLUMN_DATE + ") AS reservation_day, " +
+                        "COUNT(" + ReservationContract.COLUMN_ID + ") AS reservation_count " +
+                        "FROM " + ReservationContract.TABLE_NAME + " " +
+                        "WHERE strftime('%Y-%m', " + ReservationContract.COLUMN_DATE + ") = ? " +
+                        "GROUP BY strftime('%d', " + ReservationContract.COLUMN_DATE + ")";
+        Cursor cursor = db.rawQuery(sql, new String[]{yearMonth});
+        try {
+            while (cursor.moveToNext()) {
+                int day = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow("reservation_day")));
+                int count = cursor.getInt(cursor.getColumnIndexOrThrow("reservation_count"));
+                dailyStats.put(day, count);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return dailyStats;
+    }
+
+    public Map<Integer, Integer> getMonthlyParticipationStats(String year) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        Map<Integer, Integer> monthlyStats = new HashMap<>();
+        String sql =
+                "SELECT strftime('%m', " + ReservationContract.COLUMN_DATE + ") AS reservation_month, " +
+                        "SUM(" + ReservationContract.COLUMN_PARTICIPATION_COUNT + ") AS total_participation " +
+                        "FROM " + ReservationContract.TABLE_NAME + " " +
+                        "WHERE strftime('%Y', " + ReservationContract.COLUMN_DATE + ") = ? " +
+                        "GROUP BY strftime('%m', " + ReservationContract.COLUMN_DATE + ")";
+        Cursor cursor = db.rawQuery(sql, new String[]{year});
+        try {
+            while (cursor.moveToNext()) {
+                int month = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow("reservation_month")));
+                int total = cursor.getInt(cursor.getColumnIndexOrThrow("total_participation"));
+                monthlyStats.put(month, total);
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return monthlyStats;
+    }
+
+    public Map<String, Integer> getUserCategoryStats(long userId) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        Map<String, Integer> stats = new HashMap<>();
+        String sql = "SELECT e." + EventContract.COLUMN_CATEGORY + ", COUNT(r." + ReservationContract.COLUMN_ID + ") " +
+                "FROM " + ReservationContract.TABLE_NAME + " r " +
+                "JOIN Event e ON r." + ReservationContract.COLUMN_EVENT_ID + " = e." + EventContract.COLUMN_ID +
+                " WHERE r." + ReservationContract.COLUMN_USER_ID + " = ? " +
+                "GROUP BY e." + EventContract.COLUMN_CATEGORY;
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(userId)});
+
+        try {
+            int categoryIndex = cursor.getColumnIndexOrThrow(EventContract.COLUMN_CATEGORY);
+            int countIndex = 1;
+
+            while (cursor.moveToNext()) {
+                String category = cursor.getString(categoryIndex);
+                int count = cursor.getInt(countIndex);
+                if (category != null) {
+                    stats.put(category, count);
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return stats;
+    }
+    public List<UserReservationSummary> getUserRecentReservations(long userId, int limit) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        List<UserReservationSummary> summaryList = new ArrayList<>();
+        String sql = "SELECT r.*, e." + EventContract.COLUMN_TITLE + " AS event_title " +
+                "FROM " + ReservationContract.TABLE_NAME + " r " +
+                "JOIN Event e ON r." + ReservationContract.COLUMN_EVENT_ID + " = e." + EventContract.COLUMN_ID +
+                " WHERE r." + ReservationContract.COLUMN_USER_ID + " = ? " +
+                " ORDER BY r." + ReservationContract.COLUMN_DATE + " DESC " +
+                " LIMIT ?";
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(userId), String.valueOf(limit)});
+        try {
+            while (cursor.moveToNext()) {
+                Reservation reservation = new Reservation(cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)), ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))), cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)), ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))), cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)), parseDate(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE))));
+                String eventTitle = cursor.getString(cursor.getColumnIndexOrThrow("event_title"));
+                summaryList.add(new UserReservationSummary(reservation, eventTitle));
+            }
+        } finally {
+            cursor.close();
+        }
+        return summaryList;
     }
 }

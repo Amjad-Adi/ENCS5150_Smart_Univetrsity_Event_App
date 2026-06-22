@@ -256,17 +256,7 @@ public class EventRepository {
         try {
             int imgIndex = cursor.getColumnIndex(EventContract.COLUMN_IMAGE_PATH);
             while (cursor.moveToNext()) {
-                Event event = new Event(
-                        cursor.getLong(cursor.getColumnIndexOrThrow(EventContract.COLUMN_ID)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_TITLE)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_DESCRIPTION)),
-                        cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_CATEGORY)),
-                        LocalDate.parse(cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_DATE))),
-                        LocalTime.parse(cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_TIME))),
-                        cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_LOCATION)),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(EventContract.COLUMN_TOTAL_SEATS)),
-                        EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_STATUS)))
-                );
+                Event event = new Event(cursor.getLong(cursor.getColumnIndexOrThrow(EventContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_TITLE)), cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_DESCRIPTION)), cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_CATEGORY)), LocalDate.parse(cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_DATE))), LocalTime.parse(cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_TIME))), cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_LOCATION)), cursor.getInt(cursor.getColumnIndexOrThrow(EventContract.COLUMN_TOTAL_SEATS)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_STATUS))));
                 if (imgIndex != -1 && !cursor.isNull(imgIndex)) {
                     event.setImagePath(cursor.getString(imgIndex));
                 }
@@ -280,5 +270,65 @@ public class EventRepository {
         } finally {
             cursor.close();
         }
+    }
+    public int getTotalEventsCount() {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM " + EventContract.TABLE_NAME,
+                null
+        );
+
+        try {
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(0);
+            }
+            return 0;
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public Map<String, Integer> getEventCategoryCounts() {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        Map<String, Integer> categoryCount = new HashMap<>();
+        String sql = "SELECT " + EventContract.COLUMN_CATEGORY +
+                        ", COUNT(" + EventContract.COLUMN_ID + ") AS event_count " +
+                        "FROM " + EventContract.TABLE_NAME +
+                        " GROUP BY " + EventContract.COLUMN_CATEGORY;
+        Cursor cursor = db.rawQuery(sql, null);
+        try {
+            while (cursor.moveToNext()) {
+                String category = cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_CATEGORY));
+                int count = cursor.getInt(cursor.getColumnIndexOrThrow("event_count"));
+                if (category != null) {
+                    categoryCount.put(category, count);
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return categoryCount;
+    }
+    public List<Event> getHighDemandEvents(int limit) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        List<Event> highDemandEvents = new ArrayList<>();
+        String sql = "SELECT e.*, SUM(r." + ReservationContract.COLUMN_PARTICIPATION_COUNT + ") as total_demand " +
+                "FROM Event e " +
+                "JOIN " + ReservationContract.TABLE_NAME + " r ON e." + EventContract.COLUMN_ID + " = r." + ReservationContract.COLUMN_EVENT_ID + " " +
+                "GROUP BY e." + EventContract.COLUMN_ID + " " +
+                "ORDER BY total_demand DESC " +
+                "LIMIT ?";
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(limit)});
+        try {
+            while (cursor.moveToNext()) {
+                Event event = new Event(cursor.getLong(cursor.getColumnIndexOrThrow(EventContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_TITLE)), cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_DESCRIPTION)), cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_CATEGORY)), LocalDate.parse(cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_DATE))), LocalTime.parse(cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_TIME))), cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_LOCATION)), cursor.getInt(cursor.getColumnIndexOrThrow(EventContract.COLUMN_TOTAL_SEATS)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(EventContract.COLUMN_STATUS))));
+                highDemandEvents.add(event);
+            }
+        } finally {
+            cursor.close();
+        }
+        return highDemandEvents;
     }
 }

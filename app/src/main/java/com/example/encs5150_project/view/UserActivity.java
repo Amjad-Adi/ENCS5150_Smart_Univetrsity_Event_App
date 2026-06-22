@@ -21,6 +21,7 @@ import com.example.encs5150_project.controller.LogOutController;
 import com.example.encs5150_project.controller.UserEventController;
 import com.example.encs5150_project.controller.UserEventReserveController;
 import com.example.encs5150_project.controller.UserFavoritesController;
+import com.example.encs5150_project.controller.UserHomeController;
 import com.example.encs5150_project.controller.UserProfileController;
 import com.example.encs5150_project.controller.UserRecommendedController;
 import com.example.encs5150_project.controller.UserReservationsController;
@@ -46,6 +47,7 @@ public class UserActivity extends AppCompatActivity {
     private UserReservationsController userReservationsController;
     private UserFavoritesController userFavoritesController;
     private UserRecommendedController userRecommendedController;
+    private UserHomeController userHomeController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,5 +182,20 @@ public class UserActivity extends AppCompatActivity {
             userRecommendedController = new UserRecommendedController(new EventRepository(DataBaseHelper.getInstance(this)),new UserRepository(DataBaseHelper.getInstance(this)),new FavouriteRepository(DataBaseHelper.getInstance(this)),SharedPrefManager.getInstance(this));
         }
         return userRecommendedController;
+    }
+    public UserHomeController getUserHomeController() {
+        if (userHomeController == null) {
+            userHomeController = new UserHomeController(new UserRepository(DataBaseHelper.getInstance(this)),new EventRepository(DataBaseHelper.getInstance(this)),new ReservationRepository(DataBaseHelper.getInstance(this)),SharedPrefManager.getInstance(this));
+        }
+        return userHomeController;
+    }
+    public void navigateToReservations() {
+        navigationView.setCheckedItem(R.id.user_nav_reservations);
+        replaceFragment(new UserReservationsFragment(), "My Reservations");
+    }
+
+    public void navigateToEvents() {
+        navigationView.setCheckedItem(R.id.user_nav_events);
+        replaceFragment(new UserEventsFragment(), "Events");
     }
 }
