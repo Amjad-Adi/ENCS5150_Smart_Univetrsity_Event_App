@@ -504,6 +504,7 @@ git clone <repository-url>
 5. Build and run the application on an Android device or emulator.
 
 ---
+
 ## Recommended Environment
 
 To ensure the intended user experience and interface consistency, it is recommended to run the application with the following device settings:
