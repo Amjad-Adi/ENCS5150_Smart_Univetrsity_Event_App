@@ -4,8 +4,10 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.encs5150_project.model.UserReservationSummary;
 import com.example.encs5150_project.model.entity.*;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
+import com.example.encs5150_project.model.repository.database.contracts.EventContract;
 import com.example.encs5150_project.model.repository.database.contracts.ReservationContract;
 
 import java.time.LocalDateTime;
@@ -14,11 +16,24 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class ReservationRepository{
+public class ReservationRepository {
     private final DataBaseHelper dataBaseHelper;
+    private static final DateTimeFormatter SQLITE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+
     public ReservationRepository(DataBaseHelper dataBaseHelper){
-        this.dataBaseHelper=dataBaseHelper;
+        this.dataBaseHelper = dataBaseHelper;
     }
+
+    private OffsetDateTime parseDateSafely(String dateString) {
+        if (dateString == null) return null;
+        try {
+            LocalDateTime localDateTime = LocalDateTime.parse(dateString, SQLITE_FORMATTER);
+            return localDateTime.atOffset(ZoneOffset.UTC);
+        } catch (Exception e) {
+            return OffsetDateTime.parse(dateString);
+        }
+    }
+
     public void insert(Reservation reservation) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -27,6 +42,8 @@ public class ReservationRepository{
         contentValues.put(ReservationContract.COLUMN_TYPE, reservation.getReservationType().name());
         contentValues.put(ReservationContract.COLUMN_ADDITIONAL_INFO, reservation.getReservationAdditionalInfo());
         contentValues.put(ReservationContract.COLUMN_PARTICIPATION_COUNT, reservation.getParticipationCount());
+        String dateStr = reservation.getReservationDate() != null ? reservation.getReservationDate().format(SQLITE_FORMATTER) : OffsetDateTime.now(ZoneOffset.UTC).format(SQLITE_FORMATTER);
+        contentValues.put(ReservationContract.COLUMN_DATE, dateStr);
         long generatedId = db.insert(ReservationContract.TABLE_NAME, null, contentValues);
         if (generatedId == -1)
             throw new RuntimeException("Failed to insert reservation into SQLite.");
@@ -35,25 +52,35 @@ public class ReservationRepository{
 
     public void update(Reservation reservation) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
-        ContentValues contentValues=new ContentValues();
-        contentValues.put(ReservationContract.COLUMN_TYPE,reservation.getReservationType().name());
-        contentValues.put(ReservationContract.COLUMN_ADDITIONAL_INFO,reservation.getReservationAdditionalInfo());
-        contentValues.put(ReservationContract.COLUMN_PARTICIPATION_COUNT,reservation.getParticipationCount());
-        contentValues.put(ReservationContract.COLUMN_STATUS,reservation.getReservationStatus().name());
-        if (db.update(ReservationContract.TABLE_NAME,contentValues,ReservationContract.COLUMN_ID+" = ?",new String[]{String.valueOf(reservation.getId())})== 0)
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ReservationContract.COLUMN_TYPE, reservation.getReservationType().name());
+        contentValues.put(ReservationContract.COLUMN_ADDITIONAL_INFO, reservation.getReservationAdditionalInfo());
+        contentValues.put(ReservationContract.COLUMN_PARTICIPATION_COUNT, reservation.getParticipationCount());
+        contentValues.put(ReservationContract.COLUMN_STATUS, reservation.getReservationStatus().name());
+        if (reservation.getReservationDate() != null) {
+            contentValues.put(ReservationContract.COLUMN_DATE, reservation.getReservationDate().format(SQLITE_FORMATTER));
+        }
+        if (db.update(ReservationContract.TABLE_NAME, contentValues, ReservationContract.COLUMN_ID + " = ?", new String[]{String.valueOf(reservation.getId())}) == 0)
             throw new RuntimeException("No reservation found with id " + reservation.getId());
     }
 
     public Reservation findById(long id) {
         SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT *" +
-                    " FROM "+ ReservationContract.TABLE_NAME+
-                    " WHERE " + ReservationContract.COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+                "SELECT * FROM "+ ReservationContract.TABLE_NAME +
+                        " WHERE " + ReservationContract.COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
         try {
-            if (!cursor.moveToFirst())
-                return null;
-            return new Reservation(cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)), ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))), cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)), ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)), OffsetDateTime.parse(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE))));
+            if (!cursor.moveToFirst()) return null;
+            return new Reservation(
+                    cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)),
+                    cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)),
+                    cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)),
+                    ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))),
+                    cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)),
+                    ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),
+                    cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)),
+                    parseDateSafely(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
+            );
         } finally {
             cursor.close();
         }
@@ -61,13 +88,21 @@ public class ReservationRepository{
 
     public List<Reservation> findAll() {
         SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(
-                    "SELECT *" +
-                        " FROM "+ ReservationContract.TABLE_NAME, null);
-        List<Reservation>reservationList=new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM "+ ReservationContract.TABLE_NAME, null);
+        List<Reservation> reservationList = new ArrayList<>();
         try {
-            while(cursor.moveToNext())
-                reservationList.add(new Reservation(cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)), ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))), cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)),ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))), cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)) ,OffsetDateTime.parse(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))));
+            while(cursor.moveToNext()) {
+                reservationList.add(new Reservation(
+                        cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)),
+                        ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)),
+                        ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),
+                        cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)),
+                        parseDateSafely(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
+                ));
+            }
             return reservationList;
         } finally {
             cursor.close();
@@ -76,11 +111,12 @@ public class ReservationRepository{
 
     public void changeStatus(long id, ReservationStatus status) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
-        ContentValues contentValues=new ContentValues();
-        contentValues.put(ReservationContract.COLUMN_STATUS,status.name());
-        if (db.update(ReservationContract.TABLE_NAME,contentValues,ReservationContract.COLUMN_ID+" = ?",new String[]{String.valueOf(id)})==0)
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ReservationContract.COLUMN_STATUS, status.name());
+        if (db.update(ReservationContract.TABLE_NAME, contentValues, ReservationContract.COLUMN_ID + " = ?", new String[]{String.valueOf(id)}) == 0)
             throw new RuntimeException("No reservation found with id " + id);
     }
+
     public List<Reservation> search(String searchBy, boolean isAscending, String query) {
         SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
         String orderByColumn = (searchBy == null || searchBy.trim().isEmpty()) ? ReservationContract.COLUMN_ID : searchBy;
@@ -89,17 +125,58 @@ public class ReservationRepository{
                         " WHERE " + orderByColumn + " LIKE ? " +
                         " ORDER BY " + orderByColumn + " COLLATE NOCASE " + (isAscending ? "ASC" : "DESC"),
                 new String[]{"%" + query + "%"});
-        List<Reservation> reservationList = new ArrayList<>();
-        DateTimeFormatter sqliteFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
 
+        List<Reservation> reservationList = new ArrayList<>();
         try {
             while(cursor.moveToNext()) {
-
-                String dateString = cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE));
-                LocalDateTime localDateTime = LocalDateTime.parse(dateString, sqliteFormatter);
-                OffsetDateTime parsedOffsetDate = localDateTime.atOffset(ZoneOffset.UTC);
-                reservationList.add(new Reservation(cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)), ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))), cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)), ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))), cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)), parsedOffsetDate));}
+                reservationList.add(new Reservation(
+                        cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)),
+                        ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)),
+                        ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),
+                        cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)),
+                        parseDateSafely(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
+                ));
+            }
             return reservationList;
+        } finally {
+            cursor.close();
+        }
+    }
+    public void autoUpdateCompletedReservations() {
+        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ReservationContract.COLUMN_STATUS, ReservationStatus.COMPLETED.name());
+        OffsetDateTime thresholdTime = OffsetDateTime.now(ZoneOffset.UTC).minusHours(24);
+        String thresholdString = thresholdTime.format(SQLITE_FORMATTER);
+        db.update(ReservationContract.TABLE_NAME, contentValues, ReservationContract.COLUMN_STATUS + " = ? AND " + ReservationContract.COLUMN_DATE + " <= ?", new String[]{ReservationStatus.CONFIRMED.name(), thresholdString});
+    }
+    public List<UserReservationSummary> searchUserReservations(long userId, String searchBy, boolean isAscending, String query) {
+        autoUpdateCompletedReservations();
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        String orderByColumn = (searchBy == null || searchBy.trim().isEmpty()) ? "r." + ReservationContract.COLUMN_ID : searchBy;
+        if (orderByColumn.equalsIgnoreCase("event_title")) {
+            orderByColumn = "e.title";
+        } else if (!orderByColumn.contains(".")) {
+            orderByColumn = "r." + orderByColumn;
+        }
+        String sql = "SELECT r.*, e."+ EventContract.COLUMN_TITLE +" AS event_title" +
+                " FROM " + ReservationContract.TABLE_NAME + " r" +
+                " JOIN Event e ON r." + ReservationContract.COLUMN_EVENT_ID + " = e."+EventContract.COLUMN_ID +
+                " WHERE r." + ReservationContract.COLUMN_USER_ID + " = ? AND " + orderByColumn + " LIKE ?" +
+                " ORDER BY " + orderByColumn + " COLLATE NOCASE " + (isAscending ? "ASC" : "DESC");
+
+        Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(userId), "%" + query + "%"});
+        List<UserReservationSummary> summaryList = new ArrayList<>();
+        try {
+            while (cursor.moveToNext()) {
+                Reservation reservation = new Reservation(cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)), ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))), cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)), ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))), cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)), parseDateSafely(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE))));
+                String eventTitle = cursor.getString(cursor.getColumnIndexOrThrow("event_title"));
+                summaryList.add(new UserReservationSummary(reservation, eventTitle));
+            }
+            return summaryList;
         } finally {
             cursor.close();
         }

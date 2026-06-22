@@ -10,4 +10,6 @@
     <color name="warning">#ED6C02</color>
     <color name="error">#D32F2F</color>
     <color name="hintColor">#7A7A7A</color>
+    <color name="favorite_red">#E53935</color>
+    <color name="favorite_gray">#757575</color>
 </resources>

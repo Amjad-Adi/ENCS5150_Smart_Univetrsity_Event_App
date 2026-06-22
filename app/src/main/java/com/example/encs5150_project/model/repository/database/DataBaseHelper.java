@@ -2,32 +2,24 @@ package com.example.encs5150_project.model.repository.database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.example.encs5150_project.model.PasswordHashingAlgorithm;
-import com.example.encs5150_project.model.entity.Admin;
 import com.example.encs5150_project.model.entity.AdminRole;
 import com.example.encs5150_project.model.entity.EntityStatus;
 import com.example.encs5150_project.model.entity.PersonGender;
 import com.example.encs5150_project.model.entity.ReservationStatus;
 import com.example.encs5150_project.model.entity.ReservationType;
 import com.example.encs5150_project.model.entity.UserMajor;
-import com.example.encs5150_project.model.repository.AdminRepository;
 import com.example.encs5150_project.model.config.DefaultAdmin;
 import com.example.encs5150_project.model.repository.database.contracts.AdminContract;
 import com.example.encs5150_project.model.repository.database.contracts.EventContract;
 import com.example.encs5150_project.model.repository.database.contracts.FavouriteContract;
 import com.example.encs5150_project.model.repository.database.contracts.PersonContract;
 import com.example.encs5150_project.model.repository.database.contracts.ReservationContract;
-import com.example.encs5150_project.model.repository.database.contracts.ReviewContract;
 import com.example.encs5150_project.model.repository.database.contracts.UserContract;
-
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     private static DataBaseHelper instance;
@@ -49,7 +41,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         createAdminTableSQL(db);
         createReservationTableSQL(db);
         createFavouriteTableSQL(db);
-        createReviewTableSQL(db);
+        createDatabaseIndexesSQL(db);
         insertDefaultAdmin(db);
     }
 
@@ -120,7 +112,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 .append(ReservationContract.COLUMN_PARTICIPATION_COUNT).append(" INTEGER NOT NULL DEFAULT ").append(ReservationContract.DEFAULT_PARTICIPATION_COUNT).append(" CHECK(").append(ReservationContract.COLUMN_PARTICIPATION_COUNT).append(" > 0), ")
                 .append(ReservationContract.COLUMN_ADDITIONAL_INFO).append(" TEXT NOT NULL DEFAULT '").append(ReservationContract.DEFAULT_ADDITIONAL_INFO).append("', ")
                 .append(ReservationContract.COLUMN_TYPE).append(" TEXT NOT NULL DEFAULT '").append(ReservationType.REGULAR).append("' CHECK(").append(ReservationContract.COLUMN_TYPE).append(" IN ('").append(ReservationType.REGULAR.name()).append("', '").append(ReservationType.VIP.name()).append("')), ")
-                .append(ReservationContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(ReservationStatus.CONFIRMED).append("' CHECK(").append(ReservationContract.COLUMN_STATUS).append(" IN ('").append(ReservationStatus.CONFIRMED.name()).append("', '").append(ReservationStatus.CANCELED_BY_ADMIN.name()).append("', '").append(ReservationStatus.DELETED_BY_USER.name()).append("', '").append(ReservationStatus.COMPLETED.name()).append("')), ")
+                .append(ReservationContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(ReservationStatus.CONFIRMED).append("' CHECK(").append(ReservationContract.COLUMN_STATUS).append(" IN ('").append(ReservationStatus.CONFIRMED.name()).append("', '").append(ReservationStatus.DELETED_BY_USER.name()).append("', '").append(ReservationStatus.COMPLETED.name()).append("')), ")
                 .append("FOREIGN KEY (").append(ReservationContract.COLUMN_EVENT_ID).append(") REFERENCES ").append(EventContract.TABLE_NAME).append("(").append(EventContract.COLUMN_ID).append(") ON DELETE CASCADE ON UPDATE CASCADE, ")
                 .append("FOREIGN KEY (").append(ReservationContract.COLUMN_USER_ID).append(") REFERENCES ").append(UserContract.TABLE_NAME).append("(").append(UserContract.COLUMN_ID).append(") ON UPDATE CASCADE, ")
                 .append("UNIQUE (").append(ReservationContract.COLUMN_USER_ID).append(", ").append(ReservationContract.COLUMN_EVENT_ID).append("))").toString());
@@ -136,16 +128,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 .append("FOREIGN KEY (").append(FavouriteContract.COLUMN_EVENT_ID).append(") REFERENCES ").append(EventContract.TABLE_NAME).append("(").append(EventContract.COLUMN_ID).append(") ON DELETE CASCADE ON UPDATE CASCADE, ")
                 .append("FOREIGN KEY (").append(FavouriteContract.COLUMN_USER_ID).append(") REFERENCES ").append(UserContract.TABLE_NAME).append("(").append(UserContract.COLUMN_ID).append(")  ON DELETE CASCADE ON UPDATE CASCADE)").toString());
     }
-    private void createReviewTableSQL(SQLiteDatabase db){
-        StringBuilder sqlStringBuilder=new StringBuilder();
-        db.execSQL(
-                sqlStringBuilder.append("CREATE TABLE ").append(ReviewContract.TABLE_NAME).append(" ( ")
-                .append(ReviewContract.COLUMN_RESERVATION_ID).append(" INTEGER PRIMARY KEY, ")
-                .append(ReviewContract.COLUMN_RATING).append(" REAL NOT NULL CHECK(").append(ReviewContract.COLUMN_RATING).append(" BETWEEN 1 AND 5), ")
-                .append(ReviewContract.COLUMN_TEXT).append(" TEXT, ")
-                .append(ReviewContract.COLUMN_DATE).append(" TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, ")
-                .append(ReviewContract.COLUMN_STATUS).append(" TEXT NOT NULL DEFAULT '").append(EntityStatus.ENABLED.name()).append("' CHECK(").append(ReviewContract.COLUMN_STATUS).append(" IN ('").append(EntityStatus.ENABLED.name()).append("', '").append(EntityStatus.DISABLED.name()).append("')), ")
-                .append("FOREIGN KEY (").append(ReviewContract.COLUMN_RESERVATION_ID).append(") REFERENCES ").append(ReservationContract.TABLE_NAME).append("(").append(ReservationContract.COLUMN_ID).append(")  ON DELETE CASCADE ON UPDATE CASCADE)").toString());
+    private void createDatabaseIndexesSQL(SQLiteDatabase db) {
+        StringBuilder sqlStringBuilder = new StringBuilder();
+        db.execSQL(sqlStringBuilder
+                .append("CREATE INDEX idx_reservation_event ON ")
+                .append(ReservationContract.TABLE_NAME).append(" (")
+                .append(ReservationContract.COLUMN_EVENT_ID).append(")").toString());
+        sqlStringBuilder.setLength(0);
+        db.execSQL(sqlStringBuilder
+                .append("CREATE INDEX idx_favourite_event ON ")
+                .append(FavouriteContract.TABLE_NAME).append(" (")
+                .append(FavouriteContract.COLUMN_EVENT_ID).append(")").toString());
+        sqlStringBuilder.setLength(0);
+        db.execSQL("CREATE INDEX idx_reservation_user_event ON " +
+                ReservationContract.TABLE_NAME + "(" +
+                ReservationContract.COLUMN_USER_ID + ", " +
+                ReservationContract.COLUMN_EVENT_ID + ")");
     }
     public void insertDefaultAdmin(SQLiteDatabase db) {
         ContentValues personValues = new ContentValues();

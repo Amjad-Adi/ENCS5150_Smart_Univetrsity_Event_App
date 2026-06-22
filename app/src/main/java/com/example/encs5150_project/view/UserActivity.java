@@ -21,8 +21,10 @@ import com.example.encs5150_project.controller.LogOutController;
 import com.example.encs5150_project.controller.UserEventController;
 import com.example.encs5150_project.controller.UserEventReserveController;
 import com.example.encs5150_project.controller.UserProfileController;
+import com.example.encs5150_project.controller.UserReservationsController;
 import com.example.encs5150_project.model.PasswordHashingAlgorithm;
 import com.example.encs5150_project.model.repository.EventRepository;
+import com.example.encs5150_project.model.repository.FavouriteRepository;
 import com.example.encs5150_project.model.repository.ReservationRepository;
 import com.example.encs5150_project.model.repository.UserRepository;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
@@ -39,6 +41,7 @@ public class UserActivity extends AppCompatActivity {
     private LogOutController logOutController;
     private UserEventController userEventController;
     private UserEventReserveController userEventReserveController;
+    private UserReservationsController userReservationsController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +78,7 @@ public class UserActivity extends AppCompatActivity {
                 } else if (itemId == R.id.user_nav_events) {
                     replaceFragment(new UserEventsFragment(), "Events");
                 } else if (itemId == R.id.user_nav_reservations) {
-                    replaceFragment(new UserReservationSectionFragment(), "My Reservations");
+                    replaceFragment(new UserReservationsFragment(), "My Reservations");
                 } else if (itemId == R.id.user_nav_favorites) {
                     replaceFragment(new UserFavoritesSectionFragment(), "Favorites");
                 } else if (itemId == R.id.user_nav_special) {
@@ -146,7 +149,7 @@ public class UserActivity extends AppCompatActivity {
     }
     public UserEventController getUserEventController() {
         if (userEventController == null) {
-            userEventController = new UserEventController(new EventRepository(DataBaseHelper.getInstance(this)), new UserRepository(DataBaseHelper.getInstance(this)), SharedPrefManager.getInstance(this));
+            userEventController = new UserEventController(new EventRepository(DataBaseHelper.getInstance(this)), new UserRepository(DataBaseHelper.getInstance(this)), new FavouriteRepository(DataBaseHelper.getInstance(this)),SharedPrefManager.getInstance(this));
         }
         return userEventController;
     }
@@ -155,5 +158,11 @@ public class UserActivity extends AppCompatActivity {
             userEventReserveController = new UserEventReserveController(new ReservationRepository(DataBaseHelper.getInstance(this)));
         }
         return userEventReserveController;
+    }
+    public UserReservationsController getUserReservationsController() {
+        if (userReservationsController == null) {
+            userReservationsController = new UserReservationsController(new ReservationRepository(DataBaseHelper.getInstance(this)),new UserRepository(DataBaseHelper.getInstance(this)),SharedPrefManager.getInstance(this));
+        }
+        return userReservationsController;
     }
 }

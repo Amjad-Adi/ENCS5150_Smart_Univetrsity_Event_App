@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.AdminEventController;
-import com.example.encs5150_project.model.EventSummary; // Ensure this matches your package
+import com.example.encs5150_project.model.EventSummary;
 import com.example.encs5150_project.model.entity.Event;
 import com.example.encs5150_project.model.repository.database.contracts.EventContract;
 import com.google.android.material.button.MaterialButton;
@@ -92,7 +93,8 @@ public class AdminEventsFragment extends Fragment {
 
         static class EventViewHolder extends RecyclerView.ViewHolder {
             private final ImageView ivEventImage;
-            private final TextView tvTitle, tvCategory, tvDate, tvLocation, tvCapacity, tvAverageRating;
+            private final TextView tvTitle, tvCategory, tvDate, tvLocation, tvCapacity, tvFavoriteCount, tvEventStatus;
+
             public EventViewHolder(@NonNull View itemView) {
                 super(itemView);
                 ivEventImage = itemView.findViewById(R.id.ivEventImage);
@@ -101,8 +103,10 @@ public class AdminEventsFragment extends Fragment {
                 tvDate = itemView.findViewById(R.id.tvEventDate);
                 tvLocation = itemView.findViewById(R.id.tvEventLocation);
                 tvCapacity = itemView.findViewById(R.id.tvEventCapacity);
-                tvAverageRating = itemView.findViewById(R.id.tvAverageRating);
+                tvFavoriteCount = itemView.findViewById(R.id.tvFavoriteCount);
+                tvEventStatus = itemView.findViewById(R.id.tvEventStatus);
             }
+
             public void bind(EventSummary summary) {
                 Event event = summary.event();
                 tvTitle.setText(event.getTitle());
@@ -112,10 +116,15 @@ public class AdminEventsFragment extends Fragment {
                 tvDate.setText(dateTimeFormat);
                 tvLocation.setText(event.getLocation());
                 tvCapacity.setText("(" + summary.bookedSeats() + "/" + event.getTotalSeats() + " Seats)");
-                if (summary.reviewCount() == 0) {
-                    tvAverageRating.setText("New");
+                if (summary.favoriteCount() != 0) {
+                    tvFavoriteCount.setText(String.valueOf(summary.favoriteCount()));
+                }
+                if (summary.isEnabled()) {
+                    tvEventStatus.setText("ENABLED");
+                    tvEventStatus.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.success));
                 } else {
-                    tvAverageRating.setText(String.format(Locale.US, "%.1f", summary.averageRating()));
+                    tvEventStatus.setText("DISABLED");
+                    tvEventStatus.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.warning));
                 }
                 if (event.getImagePath() == null || event.getImagePath().isEmpty()) {
                     ivEventImage.setImageResource(R.drawable.events);
@@ -163,6 +172,7 @@ public class AdminEventsFragment extends Fragment {
                 bottomSheet.show(getParentFragmentManager(), "AddEventSheet");
             }
         });
+
         getParentFragmentManager().setFragmentResultListener("RefreshEventList", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
