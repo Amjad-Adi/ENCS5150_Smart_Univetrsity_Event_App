@@ -10,7 +10,7 @@ public class Reservation {
     private int participationCount;
     private ReservationStatus reservationStatus;
     private String reservationAdditionalInfo;
-    private final OffsetDateTime reservationDate;
+    private OffsetDateTime reservationDate;
     public Reservation(long userId, long eventId, ReservationType reservationType, int participationCount, ReservationStatus reservationStatus, String reservationAdditionalInfo,OffsetDateTime reservationDate) {
         this.userId = userId;
         this.eventId = eventId;
@@ -29,6 +29,14 @@ public class Reservation {
         this.reservationStatus = reservationStatus;
         this.reservationAdditionalInfo = reservationAdditionalInfo;
         this.reservationDate = reservationDate;
+    }
+    public Reservation(long userId, long eventId, ReservationType reservationType, int participationCount,String reservationAdditionalInfo) {
+        this.userId = userId;
+        this.eventId = eventId;
+        this.reservationType = reservationType;
+        setParticipationCount(participationCount);
+        this.reservationAdditionalInfo = reservationAdditionalInfo;
+
     }
     public void setId(long id) {
         this.id = id;

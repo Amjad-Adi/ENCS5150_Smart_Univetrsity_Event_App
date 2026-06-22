@@ -1,7 +1,6 @@
 package com.example.encs5150_project.controller;
 
 import com.example.encs5150_project.model.EventSummary;
-import com.example.encs5150_project.model.entity.Event;
 import com.example.encs5150_project.model.repository.EventRepository;
 
 import java.util.ArrayList;
@@ -18,8 +17,8 @@ public class AdminEventController {
     }
     public List<EventSummary> performSearch(String filterBy, boolean isAscending, String query) {
         String cleanQuery = (query == null) ? "" : query.trim();
-        ascendingList = eventRepository.searchEventSummaries(filterBy, true, cleanQuery);
-        descendingList = eventRepository.searchEventSummaries(filterBy, false, cleanQuery);
+        ascendingList = eventRepository.searchEventSummariesForAdmin(filterBy, true, cleanQuery);
+        descendingList = eventRepository.searchEventSummariesForAdmin(filterBy, false, cleanQuery);
         return isAscending ? ascendingList : descendingList;
     }
 

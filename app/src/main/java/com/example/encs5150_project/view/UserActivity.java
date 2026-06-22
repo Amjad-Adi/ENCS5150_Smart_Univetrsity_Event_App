@@ -18,8 +18,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.LogOutController;
+import com.example.encs5150_project.controller.UserEventController;
+import com.example.encs5150_project.controller.UserEventReserveController;
 import com.example.encs5150_project.controller.UserProfileController;
 import com.example.encs5150_project.model.PasswordHashingAlgorithm;
+import com.example.encs5150_project.model.repository.EventRepository;
+import com.example.encs5150_project.model.repository.ReservationRepository;
 import com.example.encs5150_project.model.repository.UserRepository;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 import com.example.encs5150_project.model.repository.preferences.SharedPrefManager;
@@ -33,7 +37,8 @@ public class UserActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private UserProfileController profileController;
     private LogOutController logOutController;
-
+    private UserEventController userEventController;
+    private UserEventReserveController userEventReserveController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +73,7 @@ public class UserActivity extends AppCompatActivity {
                 if (itemId == R.id.user_nav_home) {
                     replaceFragment(new UserHomeFragment(), "Home");
                 } else if (itemId == R.id.user_nav_events) {
-                    replaceFragment(new UserEventsSectionFragment(), "Events");
+                    replaceFragment(new UserEventsFragment(), "Events");
                 } else if (itemId == R.id.user_nav_reservations) {
                     replaceFragment(new UserReservationSectionFragment(), "My Reservations");
                 } else if (itemId == R.id.user_nav_favorites) {
@@ -138,5 +143,17 @@ public class UserActivity extends AppCompatActivity {
             profileController = new UserProfileController(new UserRepository(DataBaseHelper.getInstance(this)), SharedPrefManager.getInstance(this), new PasswordHashingAlgorithm());
         }
         return profileController;
+    }
+    public UserEventController getUserEventController() {
+        if (userEventController == null) {
+            userEventController = new UserEventController(new EventRepository(DataBaseHelper.getInstance(this)), new UserRepository(DataBaseHelper.getInstance(this)), SharedPrefManager.getInstance(this));
+        }
+        return userEventController;
+    }
+    public UserEventReserveController getUserEventReserveController() {
+        if (userEventReserveController == null) {
+            userEventReserveController = new UserEventReserveController(new ReservationRepository(DataBaseHelper.getInstance(this)));
+        }
+        return userEventReserveController;
     }
 }
