@@ -22,38 +22,53 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.encs5150_project.R;
-import com.example.encs5150_project.controller.AdminEventController;
-import com.example.encs5150_project.model.EventSummary; // Ensure this matches your package
+import com.example.encs5150_project.controller.UserEventController;
+import com.example.encs5150_project.controller.UserEventReserveController;
+import com.example.encs5150_project.model.EventSummary;
 import com.example.encs5150_project.model.entity.Event;
+import com.example.encs5150_project.model.entity.EntityStatus;
+import com.example.encs5150_project.model.entity.User;
 import com.example.encs5150_project.model.repository.database.contracts.EventContract;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class AdminEventsFragment extends Fragment {
-
-    private AdminEventController controller;
-    private RecyclerView rvAdminEvents;
+public class UserEventsFragment extends Fragment {
+    private final static int RESERVATION_DEADLINE_IN_HOURS = 3;
+    private UserEventController controller;
+    private RecyclerView rvUserEvents;
     private TextInputEditText etSearch;
     private TextView tvNoData;
     private MaterialButton btnFilter;
     private AutoCompleteTextView autoCompleteCategory;
-    private ExtendedFloatingActionButton fabAddEvent;
 
     private EventAdapter adapter;
-    private String currentSearchBy = EventContract.COLUMN_TITLE; // Default column target
+    private String currentSearchBy = EventContract.COLUMN_TITLE;
     private boolean isAscending = true;
 
     private final Handler searchHandler = new Handler(Looper.getMainLooper());
     private Runnable searchRunnable;
     private final int SEARCH_DELAY_MS = 300;
 
-    public AdminEventsFragment() {}
+    private final int REFRESH_TIME_IN_MS = 60000;
+
+    private final Handler uiRefreshHandler = new Handler(Looper.getMainLooper());
+    private final Runnable refreshUiRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (adapter != null) {
+                adapter.notifyItemRangeChanged(0, adapter.getItemCount(), "UPDATE_COUNTS");
+            }
+            uiRefreshHandler.postDelayed(this, REFRESH_TIME_IN_MS);
+        }
+    };
+
+    public UserEventsFragment() {}
 
     private class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
         private final List<EventSummary> items = new ArrayList<>();
@@ -68,7 +83,7 @@ public class AdminEventsFragment extends Fragment {
         @Override
         public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_admin_events, parent, false);
+                    .inflate(R.layout.item_user_events, parent, false);
             return new EventViewHolder(view);
         }
 
@@ -76,23 +91,50 @@ public class AdminEventsFragment extends Fragment {
         public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
             EventSummary summary = items.get(position);
             holder.bind(summary);
-            holder.itemView.setOnClickListener(v -> {
+            holder.btnReserveEvent.setOnClickListener(v -> {
                 int adapterPosition = holder.getAdapterPosition();
                 if (adapterPosition != RecyclerView.NO_POSITION) {
                     EventSummary currentSummary = items.get(adapterPosition);
-                    AdminEventDetailsBottomSheet bottomSheet = new AdminEventDetailsBottomSheet();
-                    bottomSheet.setSetupData(currentSummary, ((AdminActivity) requireActivity()).getAdminEventDetailsController());
-                    bottomSheet.show(getParentFragmentManager(), "EventDetailSheet");
+                    UserEventReserveBottomSheet bottomSheet = new UserEventReserveBottomSheet();
+                    UserEventReserveController userEventReserveController = ((UserActivity) getActivity()).getUserEventReserveController();
+                    UserEventController userEventController = ((UserActivity) getActivity()).getUserEventController();
+                    bottomSheet.setSetupData(currentSummary, userEventReserveController, userEventController.getUser());
+                    bottomSheet.show(getParentFragmentManager(), "ReserveEventSheet");
                 }
             });
         }
 
         @Override
+        public void onBindViewHolder(@NonNull EventViewHolder holder, int position, @NonNull List<Object> payloads) {
+            if (payloads.isEmpty()) {
+                onBindViewHolder(holder, position);
+            } else {
+                for (Object payload : payloads) {
+                    if (payload instanceof String && payload.equals("UPDATE_COUNTS")) {
+                        EventSummary summary = items.get(position);
+                        Event event = summary.event();
+                        holder.tvCapacity.setText("(" + summary.bookedSeats() + "/" + event.getTotalSeats() + " Seats)");
+                        if (summary.bookedSeats() >= event.getTotalSeats() ||
+                                LocalDateTime.now().isAfter(LocalDateTime.of(event.getDate(), event.getTime()).minusHours(RESERVATION_DEADLINE_IN_HOURS)) ||
+                                event.getStatus() == EntityStatus.DISABLED ||
+                                summary.isReserved()) {
+                            holder.btnReserveEvent.setVisibility(View.GONE);
+                        } else {
+                            holder.btnReserveEvent.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
         public int getItemCount() { return items.size(); }
 
-        static class EventViewHolder extends RecyclerView.ViewHolder {
+        class EventViewHolder extends RecyclerView.ViewHolder {
             private final ImageView ivEventImage;
-            private final TextView tvTitle, tvCategory, tvDate, tvLocation, tvCapacity, tvAverageRating;
+            final TextView tvTitle, tvCategory, tvDate, tvLocation, tvCapacity, tvAverageRating;
+            final MaterialButton btnReserveEvent;
+
             public EventViewHolder(@NonNull View itemView) {
                 super(itemView);
                 ivEventImage = itemView.findViewById(R.id.ivEventImage);
@@ -102,7 +144,9 @@ public class AdminEventsFragment extends Fragment {
                 tvLocation = itemView.findViewById(R.id.tvEventLocation);
                 tvCapacity = itemView.findViewById(R.id.tvEventCapacity);
                 tvAverageRating = itemView.findViewById(R.id.tvAverageRating);
+                btnReserveEvent = itemView.findViewById(R.id.btnReserveEvent);
             }
+
             public void bind(EventSummary summary) {
                 Event event = summary.event();
                 tvTitle.setText(event.getTitle());
@@ -122,11 +166,17 @@ public class AdminEventsFragment extends Fragment {
                 } else {
                     Glide.with(itemView.getContext())
                             .load(event.getImagePath())
-                            .skipMemoryCache(true)
-                            .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
                             .placeholder(R.drawable.events)
                             .error(R.drawable.events)
                             .into(ivEventImage);
+                }
+                if (summary.bookedSeats() >= event.getTotalSeats() ||
+                        LocalDateTime.now().isAfter(LocalDateTime.of(event.getDate(), event.getTime()).minusHours(RESERVATION_DEADLINE_IN_HOURS)) ||
+                        event.getStatus() == EntityStatus.DISABLED ||
+                        summary.isReserved()) {
+                    btnReserveEvent.setVisibility(View.GONE);
+                } else {
+                    btnReserveEvent.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -134,36 +184,28 @@ public class AdminEventsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_admin_events, container, false);
+        return inflater.inflate(R.layout.fragment_user_events, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getActivity() instanceof AdminActivity) {
-            controller = ((AdminActivity) getActivity()).getAdminEventController();
+
+        if (getActivity() instanceof UserActivity) {
+            controller = ((UserActivity) getActivity()).getUserEventController();
         }
-        rvAdminEvents = view.findViewById(R.id.rvAdminEvents);
+        rvUserEvents = view.findViewById(R.id.rvUserEvents);
         etSearch = view.findViewById(R.id.etSearchEvents);
         btnFilter = view.findViewById(R.id.btnFilterEvents);
         tvNoData = view.findViewById(R.id.emptyView);
         autoCompleteCategory = view.findViewById(R.id.autoComplete_Category);
-        fabAddEvent = view.findViewById(R.id.fabAddEvent);
         setupSearch();
         setupCategoryDropdown();
         setupSortButton();
         adapter = new EventAdapter();
-        rvAdminEvents.setAdapter(adapter);
+        rvUserEvents.setAdapter(adapter);
         refreshList();
-        fabAddEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AdminAddEventBottomSheet bottomSheet = new AdminAddEventBottomSheet();
-                bottomSheet.setSetupData(((AdminActivity) requireActivity()).getAdminAddEventController());
-                bottomSheet.show(getParentFragmentManager(), "AddEventSheet");
-            }
-        });
-        getParentFragmentManager().setFragmentResultListener("RefreshEventList", this, new FragmentResultListener() {
+        getParentFragmentManager().setFragmentResultListener("RefreshUserEventList", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle bundle) {
                 if (bundle.getBoolean("isUpdated", false)) {
@@ -171,12 +213,14 @@ public class AdminEventsFragment extends Fragment {
                 }
             }
         });
+        uiRefreshHandler.postDelayed(refreshUiRunnable, REFRESH_TIME_IN_MS);
     }
 
     private void setupSearch() {
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
             @Override
             public void afterTextChanged(Editable s) {
                 if (searchRunnable != null) {
@@ -208,7 +252,9 @@ public class AdminEventsFragment extends Fragment {
             public void onClick(View v) {
                 isAscending = !isAscending;
                 updateSortIcon();
-                adapter.updateData(controller.toggleSortDirection(isAscending));
+                if (controller != null) {
+                    adapter.updateData(controller.toggleSortDirection(isAscending));
+                }
             }
         });
     }
@@ -219,13 +265,14 @@ public class AdminEventsFragment extends Fragment {
     }
 
     private void refreshList() {
+        if (controller == null) return;
         String query = etSearch.getText() != null ? etSearch.getText().toString() : "";
         List<EventSummary> results = controller.performSearch(currentSearchBy, isAscending, query);
         if (results.isEmpty()) {
-            rvAdminEvents.setVisibility(View.GONE);
+            rvUserEvents.setVisibility(View.GONE);
             tvNoData.setVisibility(View.VISIBLE);
         } else {
-            rvAdminEvents.setVisibility(View.VISIBLE);
+            rvUserEvents.setVisibility(View.VISIBLE);
             tvNoData.setVisibility(View.GONE);
             adapter.updateData(results);
         }
@@ -235,8 +282,7 @@ public class AdminEventsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (searchRunnable != null) {
-            searchHandler.removeCallbacks(searchRunnable);
-        }
+        searchHandler.removeCallbacks(searchRunnable);
+        uiRefreshHandler.removeCallbacks(refreshUiRunnable);
     }
 }

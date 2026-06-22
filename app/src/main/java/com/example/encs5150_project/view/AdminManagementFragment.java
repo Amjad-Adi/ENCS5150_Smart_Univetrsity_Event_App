@@ -231,10 +231,10 @@ public class AdminManagementFragment extends Fragment {
         String[] displayNames;
         String[] columnNames;
         if (controller.getCurrentType() == AdminManagementController.AccountType.USER) {
-            displayNames = new String[]{"ID", "First Name", "Last Name", "Email", "Gender", "Major", "Phone Number", "Account Status"};
+            displayNames = new String[]{"First Name", "Last Name", "Email", "Gender", "Major", "Phone Number", "Account Status"};
             columnNames = new String[]{UserContract.COLUMN_ID, PersonContract.COLUMN_FIRST_NAME, PersonContract.COLUMN_LAST_NAME, PersonContract.COLUMN_EMAIL, PersonContract.COLUMN_GENDER, UserContract.COLUMN_MAJOR, UserContract.COLUMN_PHONE_NUMBER, UserContract.COLUMN_ACCOUNT_STATUS};
         } else {
-            displayNames = new String[]{"ID", "First Name", "Last Name", "Email", "Gender", "Salary", "Role", "Account Status"};
+            displayNames = new String[]{"First Name", "Last Name", "Email", "Gender", "Salary", "Role", "Account Status"};
             columnNames = new String[]{AdminContract.COLUMN_ID, PersonContract.COLUMN_FIRST_NAME, PersonContract.COLUMN_LAST_NAME, PersonContract.COLUMN_EMAIL, PersonContract.COLUMN_GENDER, AdminContract.COLUMN_SALARY, AdminContract.COLUMN_ROLE, AdminContract.COLUMN_ACCOUNT_STATUS};
         }
         ArrayAdapter<String> dropdownAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, displayNames);

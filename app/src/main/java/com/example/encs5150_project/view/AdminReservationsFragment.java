@@ -59,7 +59,7 @@ public class AdminReservationsFragment extends Fragment {
         @Override
         public ReservationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_reservation, parent, false);
+                    .inflate(R.layout.item_admin_reservation, parent, false);
             return new ReservationViewHolder(view);
         }
 

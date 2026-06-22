@@ -288,7 +288,7 @@
                 android:padding="8dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:itemCount="2"
-                tools:listitem="@layout/item_events" />
+                tools:listitem="@layout/item_admin_events" />
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
@@ -326,7 +326,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvUpcomingEventsTitle"
-            tools:listitem="@layout/item_events" />
+            tools:listitem="@layout/item_admin_events" />
 
         <TextView
             android:id="@+id/tvHighDemandTitle"
@@ -363,7 +363,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvHighDemandTitle"
-            tools:listitem="@layout/item_events" />
+            tools:listitem="@layout/item_admin_events" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardCategoryStats"

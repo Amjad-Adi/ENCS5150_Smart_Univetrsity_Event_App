@@ -8,7 +8,10 @@ import com.example.encs5150_project.model.entity.*;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 import com.example.encs5150_project.model.repository.database.contracts.ReservationContract;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ReservationRepository{
@@ -87,10 +90,15 @@ public class ReservationRepository{
                         " ORDER BY " + orderByColumn + " COLLATE NOCASE " + (isAscending ? "ASC" : "DESC"),
                 new String[]{"%" + query + "%"});
         List<Reservation> reservationList = new ArrayList<>();
+        DateTimeFormatter sqliteFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+
         try {
             while(cursor.moveToNext()) {
-                reservationList.add(new Reservation(cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)),cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)),  ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))), cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)) , ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)),OffsetDateTime.parse(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))));
-            }
+
+                String dateString = cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE));
+                LocalDateTime localDateTime = LocalDateTime.parse(dateString, sqliteFormatter);
+                OffsetDateTime parsedOffsetDate = localDateTime.atOffset(ZoneOffset.UTC);
+                reservationList.add(new Reservation(cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)), cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)), ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))), cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)), ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))), cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)), parsedOffsetDate));}
             return reservationList;
         } finally {
             cursor.close();

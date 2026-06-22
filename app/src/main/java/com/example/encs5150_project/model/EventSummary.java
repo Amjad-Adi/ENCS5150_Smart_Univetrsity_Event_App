@@ -5,5 +5,6 @@ public record EventSummary(
         Event event,
         int bookedSeats,
         double averageRating,
-        int reviewCount
+        int reviewCount,
+        boolean isReserved
 ) {}
