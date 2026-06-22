@@ -26,8 +26,6 @@ import com.example.encs5150_project.controller.UserEventController;
 import com.example.encs5150_project.controller.UserEventReserveController;
 import com.example.encs5150_project.model.EventSummary;
 import com.example.encs5150_project.model.entity.Event;
-import com.example.encs5150_project.model.entity.EntityStatus;
-import com.example.encs5150_project.model.entity.User;
 import com.example.encs5150_project.model.repository.database.contracts.EventContract;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -46,7 +44,6 @@ public class UserEventsFragment extends Fragment {
     private TextView tvNoData;
     private MaterialButton btnFilter;
     private AutoCompleteTextView autoCompleteCategory;
-
     private EventAdapter adapter;
     private String currentSearchBy = EventContract.COLUMN_TITLE;
     private boolean isAscending = true;
@@ -116,7 +113,7 @@ public class UserEventsFragment extends Fragment {
                         holder.tvCapacity.setText("(" + summary.bookedSeats() + "/" + event.getTotalSeats() + " Seats)");
                         if (summary.bookedSeats() >= event.getTotalSeats() ||
                                 LocalDateTime.now().isAfter(LocalDateTime.of(event.getDate(), event.getTime()).minusHours(RESERVATION_DEADLINE_IN_HOURS)) ||
-                                event.getStatus() == EntityStatus.DISABLED ||
+                                !summary.isEnabled() ||
                                 summary.isReserved()) {
                             holder.btnReserveEvent.setVisibility(View.GONE);
                         } else {
@@ -132,18 +129,19 @@ public class UserEventsFragment extends Fragment {
 
         class EventViewHolder extends RecyclerView.ViewHolder {
             private final ImageView ivEventImage;
-            final TextView tvTitle, tvCategory, tvDate, tvLocation, tvCapacity, tvAverageRating;
+            private final ImageView ivEventFavorite;
+            final TextView tvTitle, tvCategory, tvDate, tvLocation, tvCapacity;
             final MaterialButton btnReserveEvent;
 
             public EventViewHolder(@NonNull View itemView) {
                 super(itemView);
                 ivEventImage = itemView.findViewById(R.id.ivEventImage);
+                ivEventFavorite = itemView.findViewById(R.id.ivEventFavorite);
                 tvTitle = itemView.findViewById(R.id.tvEventTitle);
                 tvCategory = itemView.findViewById(R.id.tvEventCategory);
                 tvDate = itemView.findViewById(R.id.tvEventDate);
                 tvLocation = itemView.findViewById(R.id.tvEventLocation);
                 tvCapacity = itemView.findViewById(R.id.tvEventCapacity);
-                tvAverageRating = itemView.findViewById(R.id.tvAverageRating);
                 btnReserveEvent = itemView.findViewById(R.id.btnReserveEvent);
             }
 
@@ -156,10 +154,14 @@ public class UserEventsFragment extends Fragment {
                 tvDate.setText(dateTimeFormat);
                 tvLocation.setText(event.getLocation());
                 tvCapacity.setText("(" + summary.bookedSeats() + "/" + event.getTotalSeats() + " Seats)");
-                if (summary.reviewCount() == 0) {
-                    tvAverageRating.setText("New");
-                } else {
-                    tvAverageRating.setText(String.format(Locale.US, "%.1f", summary.averageRating()));
+                if (controller != null) {
+                    boolean isFavorited = controller.isFavorited(event.getId());
+                    ivEventFavorite.setSelected(isFavorited);
+                    ivEventFavorite.setOnClickListener(v -> {
+                        boolean currentlyFavorited = ivEventFavorite.isSelected();
+                        controller.toggleFavourite(event.getId(), currentlyFavorited);
+                        ivEventFavorite.setSelected(!currentlyFavorited);
+                    });
                 }
                 if (event.getImagePath() == null || event.getImagePath().isEmpty()) {
                     ivEventImage.setImageResource(R.drawable.events);
@@ -172,7 +174,7 @@ public class UserEventsFragment extends Fragment {
                 }
                 if (summary.bookedSeats() >= event.getTotalSeats() ||
                         LocalDateTime.now().isAfter(LocalDateTime.of(event.getDate(), event.getTime()).minusHours(RESERVATION_DEADLINE_IN_HOURS)) ||
-                        event.getStatus() == EntityStatus.DISABLED ||
+                        !summary.isEnabled() ||
                         summary.isReserved()) {
                     btnReserveEvent.setVisibility(View.GONE);
                 } else {

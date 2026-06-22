@@ -26,7 +26,7 @@ public class IntroductionController implements APIFetchObserver {
     }
     public void storeData(List<Event> list){
         for(Event event:list)
-            eventRepository.insert(event);
+            eventRepository.upsertFromApi(event);
     }
     @Override
     public void onFetchSuccess(List<Event> list){

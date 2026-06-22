@@ -16,6 +16,7 @@ public class AdminReservationController {
     }
 
     public List<Reservation> performSearch(String filterBy, boolean isAscending, String query) {
+        reservationRepository.autoUpdateCompletedReservations();
         String cleanQuery = (query == null) ? "" : query.trim();
         ascendingList = reservationRepository.search(filterBy, true, cleanQuery);
         descendingList = reservationRepository.search(filterBy, false, cleanQuery);

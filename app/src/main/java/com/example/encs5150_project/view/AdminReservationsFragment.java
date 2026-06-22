@@ -15,18 +15,22 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.AdminReservationController;
 import com.example.encs5150_project.model.entity.Reservation;
+import com.example.encs5150_project.model.entity.ReservationStatus;
 import com.example.encs5150_project.model.repository.database.contracts.ReservationContract;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class AdminReservationsFragment extends Fragment {
 
@@ -73,7 +77,7 @@ public class AdminReservationsFragment extends Fragment {
         public int getItemCount() { return items.size(); }
 
         static class ReservationViewHolder extends RecyclerView.ViewHolder {
-            private final TextView tvResStatus, tvResId, tvResType, tvResConnection, tvResDetails, tvResAdditionalInfo;
+            private final TextView tvResStatus, tvResId, tvResType, tvResConnection, tvResDetails, tvResTimestamp, tvResAdditionalInfo;
 
             public ReservationViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -82,15 +86,33 @@ public class AdminReservationsFragment extends Fragment {
                 tvResType = itemView.findViewById(R.id.tvResType);
                 tvResConnection = itemView.findViewById(R.id.tvResConnection);
                 tvResDetails = itemView.findViewById(R.id.tvResDetails);
+                tvResTimestamp = itemView.findViewById(R.id.tvResTimestamp);
                 tvResAdditionalInfo = itemView.findViewById(R.id.tvResAdditionalInfo);
             }
 
             public void bind(Reservation reservation) {
-                tvResStatus.setText(reservation.getReservationStatus().name());
+                ReservationStatus status = reservation.getReservationStatus();
+                tvResStatus.setText(status.name().replace("_", " ")); // Formats DELETED_BY_USER to DELETED BY USER
+                switch (status) {
+                    case CONFIRMED:
+                        tvResStatus.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.success));
+                        break;
+                    case DELETED_BY_USER:
+                        tvResStatus.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.warning));
+                        break;
+                    case COMPLETED:
+                        tvResStatus.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.colorSecondary));
+                        break;
+                }
                 tvResId.setText("RES-" + reservation.getId());
                 tvResType.setText("• " + reservation.getReservationType().name());
                 tvResConnection.setText("User ID: #" + reservation.getUserId() + "  →  Event ID: #" + reservation.getEventId());
-                tvResDetails.setText(reservation.getReservationDate() + "  |  " + reservation.getParticipationCount() + " Seats");
+                tvResDetails.setText(reservation.getParticipationCount() + " Seats");
+                DateTimeFormatter uiFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
+                String formattedDate = reservation.getReservationDate() != null
+                        ? reservation.getReservationDate().format(uiFormatter)
+                        : "N/A";
+                tvResTimestamp.setText("Reserved: " + formattedDate);
                 String info = reservation.getReservationAdditionalInfo();
                 if (info == null || info.trim().isEmpty() || info.equals(ReservationContract.DEFAULT_ADDITIONAL_INFO)) {
                     tvResAdditionalInfo.setText("Note: None");
@@ -140,17 +162,8 @@ public class AdminReservationsFragment extends Fragment {
     }
 
     private void setupCategoryDropdown() {
-        String[] displayNames = new String[]{"Reservation ID", "Event ID", "User ID", "Date", "Participation Count", "Type", "Status"};
-        String[] columnNames = new String[]{
-                ReservationContract.COLUMN_ID,
-                ReservationContract.COLUMN_EVENT_ID,
-                ReservationContract.COLUMN_USER_ID,
-                ReservationContract.COLUMN_DATE,
-                ReservationContract.COLUMN_PARTICIPATION_COUNT,
-                ReservationContract.COLUMN_TYPE,
-                ReservationContract.COLUMN_STATUS
-        };
-
+        String[] displayNames = new String[]{ "Event ID", "User ID", "Date", "Participation Count", "Type", "Status"};
+        String[] columnNames = new String[]{ReservationContract.COLUMN_EVENT_ID, ReservationContract.COLUMN_USER_ID, ReservationContract.COLUMN_DATE, ReservationContract.COLUMN_PARTICIPATION_COUNT, ReservationContract.COLUMN_TYPE, ReservationContract.COLUMN_STATUS};
         ArrayAdapter<String> dropdownAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, displayNames);
         autoCompleteCategory.setAdapter(dropdownAdapter);
         autoCompleteCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -182,7 +195,6 @@ public class AdminReservationsFragment extends Fragment {
 
     private void refreshList() {
         if (controller == null) return;
-
         String query = etSearch.getText() != null ? etSearch.getText().toString() : "";
         List<Reservation> results = controller.performSearch(currentSearchBy, isAscending, query);
 

@@ -134,7 +134,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/past_events"
+                        android:src="@drawable/clock"
                         app:tint="@color/colorPrimary" />
                 </com.google.android.material.card.MaterialCardView>
 
