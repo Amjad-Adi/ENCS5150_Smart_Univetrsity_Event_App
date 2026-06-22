@@ -92,7 +92,7 @@ public class UserReservationsFragment extends Fragment {
     }
 
     private void setupCategoryDropdown() {
-        String[] displayNames = new String[]{"Reservation ID", "Trip/Event Name", "Reservation Date", "Participation Count", "Status"};
+        String[] displayNames = new String[]{"Reservation ID", "Event Name", "Reservation Date", "Participation Count", "Status"};
         String[] columnNames = new String[]{ReservationContract.COLUMN_ID, EventContract.COLUMN_TITLE, ReservationContract.COLUMN_DATE, ReservationContract.COLUMN_PARTICIPATION_COUNT, ReservationContract.COLUMN_STATUS};
         ArrayAdapter<String> dropdownAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_dropdown_item_1line, displayNames);
         autoCompleteCategory.setAdapter(dropdownAdapter);
@@ -174,8 +174,6 @@ public class UserReservationsFragment extends Fragment {
 
             public void bind(UserReservationSummary summary) {
                 Reservation reservation = summary.reservation();
-
-                // 1. Text IDs
                 tvResId.setText("RES-" + reservation.getId());
                 tvResType.setText("• " + reservation.getReservationType().name());
                 tvResEventName.setText(summary.eventTitle());

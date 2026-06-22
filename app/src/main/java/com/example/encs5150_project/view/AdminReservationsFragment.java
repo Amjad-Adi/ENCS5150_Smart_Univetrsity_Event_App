@@ -109,9 +109,7 @@ public class AdminReservationsFragment extends Fragment {
                 tvResConnection.setText("User ID: #" + reservation.getUserId() + "  →  Event ID: #" + reservation.getEventId());
                 tvResDetails.setText(reservation.getParticipationCount() + " Seats");
                 DateTimeFormatter uiFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.US);
-                String formattedDate = reservation.getReservationDate() != null
-                        ? reservation.getReservationDate().format(uiFormatter)
-                        : "N/A";
+                String formattedDate = reservation.getReservationDate() != null ? reservation.getReservationDate().format(uiFormatter) : "N/A";
                 tvResTimestamp.setText("Reserved: " + formattedDate);
                 String info = reservation.getReservationAdditionalInfo();
                 if (info == null || info.trim().isEmpty() || info.equals(ReservationContract.DEFAULT_ADDITIONAL_INFO)) {

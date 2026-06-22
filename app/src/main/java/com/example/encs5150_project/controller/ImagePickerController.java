@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.Toast;
 import com.example.encs5150_project.model.observer.ImagePickerObserver;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
@@ -24,7 +27,6 @@ public class ImagePickerController {
     public ImagePickerController(Fragment fragment, ImagePickerObserver listener) {
         this.fragment = fragment;
 
-        // 1. Camera Capture Launcher
         this.cameraLauncher = fragment.registerForActivityResult(
                 new ActivityResultContracts.TakePicture(),
                 success -> {
@@ -45,10 +47,13 @@ public class ImagePickerController {
                 });
         this.galleryLauncher = fragment.registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        Uri selectedImage = result.getData().getData();
-                        listener.onImagePicked(selectedImage);
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                            Uri selectedImage = result.getData().getData();
+                            listener.onImagePicked(selectedImage);
+                        }
                     }
                 });
     }
