@@ -20,6 +20,7 @@ import com.example.encs5150_project.R;
 import com.example.encs5150_project.controller.LogOutController;
 import com.example.encs5150_project.controller.UserEventController;
 import com.example.encs5150_project.controller.UserEventReserveController;
+import com.example.encs5150_project.controller.UserFavoritesController;
 import com.example.encs5150_project.controller.UserProfileController;
 import com.example.encs5150_project.controller.UserReservationsController;
 import com.example.encs5150_project.model.PasswordHashingAlgorithm;
@@ -42,6 +43,7 @@ public class UserActivity extends AppCompatActivity {
     private UserEventController userEventController;
     private UserEventReserveController userEventReserveController;
     private UserReservationsController userReservationsController;
+    private UserFavoritesController userFavoritesController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +82,7 @@ public class UserActivity extends AppCompatActivity {
                 } else if (itemId == R.id.user_nav_reservations) {
                     replaceFragment(new UserReservationsFragment(), "My Reservations");
                 } else if (itemId == R.id.user_nav_favorites) {
-                    replaceFragment(new UserFavoritesSectionFragment(), "Favorites");
+                    replaceFragment(new UserFavoritesFragment(), "Favorites");
                 } else if (itemId == R.id.user_nav_special) {
                     replaceFragment(new UserSpecialSectionFragment(), "Special Section");
                 } else if (itemId == R.id.user_nav_profile) {
@@ -164,5 +166,11 @@ public class UserActivity extends AppCompatActivity {
             userReservationsController = new UserReservationsController(new ReservationRepository(DataBaseHelper.getInstance(this)),new UserRepository(DataBaseHelper.getInstance(this)),SharedPrefManager.getInstance(this));
         }
         return userReservationsController;
+    }
+    public UserFavoritesController getUserFavoritesController() {
+        if (userFavoritesController == null) {
+            userFavoritesController = new UserFavoritesController(new EventRepository(DataBaseHelper.getInstance(this)),new UserRepository(DataBaseHelper.getInstance(this)),new FavouriteRepository(DataBaseHelper.getInstance(this)),SharedPrefManager.getInstance(this));
+        }
+        return userFavoritesController;
     }
 }

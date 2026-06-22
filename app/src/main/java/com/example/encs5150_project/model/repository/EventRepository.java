@@ -45,7 +45,6 @@ public class EventRepository {
         contentValues.put(EventContract.COLUMN_LOCATION, event.getLocation());
         contentValues.put(EventContract.COLUMN_TOTAL_SEATS, event.getTotalSeats());
         contentValues.put(EventContract.COLUMN_IMAGE_PATH, event.getImagePath());
-
         db.beginTransaction();
         try {
             int rowsAffected = db.update(EventContract.TABLE_NAME, contentValues, EventContract.COLUMN_ID + " = ?", new String[]{String.valueOf(event.getId())});
