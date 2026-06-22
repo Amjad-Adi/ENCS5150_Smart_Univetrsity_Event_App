@@ -21,6 +21,7 @@ import com.example.encs5150_project.controller.AddAccountController;
 import com.example.encs5150_project.controller.AdminAddEventController;
 import com.example.encs5150_project.controller.AdminEventController;
 import com.example.encs5150_project.controller.AdminEventDetailsController;
+import com.example.encs5150_project.controller.AdminHomeController;
 import com.example.encs5150_project.controller.AdminReservationController;
 import com.example.encs5150_project.controller.LogOutController;
 import com.example.encs5150_project.controller.AdminDetailsController;
@@ -53,6 +54,7 @@ public class AdminActivity extends AppCompatActivity {
     private AdminEventDetailsController adminEventDetailsController;
     private AdminAddEventController adminAddEventController;
     private AdminReservationController adminReservationController;
+    private AdminHomeController adminHomeController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,5 +202,11 @@ public class AdminActivity extends AppCompatActivity {
             adminReservationController = new AdminReservationController(new ReservationRepository(DataBaseHelper.getInstance(this)));
         }
         return adminReservationController;
+    }
+    public AdminHomeController getAdminHomeController() {
+        if (adminHomeController == null) {
+            adminHomeController = new AdminHomeController(new AdminRepository(DataBaseHelper.getInstance(this)),new UserRepository(DataBaseHelper.getInstance(this)),new EventRepository(DataBaseHelper.getInstance(this)),new ReservationRepository(DataBaseHelper.getInstance(this)), SharedPrefManager.getInstance(this));
+        }
+        return adminHomeController;
     }
 }

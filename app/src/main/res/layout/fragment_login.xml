@@ -82,7 +82,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textInputLayout_Email"
             android:textColorHint="@color/hintColor"
-            app:hintTextColor="@color/success">
+            app:hintTextColor="@color/success"
+            app:endIconTint="@color/hintColor">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editText_Password"
@@ -91,13 +92,13 @@
                 android:inputType="textPassword"
                 android:textColor="@color/colorSecondary"/>
         </com.google.android.material.textfield.TextInputLayout>
-
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/checkBox_Remember"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Remember Me"
+            android:textColor="@color/colorSecondary"
             app:buttonTint="@color/checkbox_tint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -109,8 +110,9 @@
             android:layout_height="56dp"
             android:layout_marginTop="22dp"
             android:text="Login"
-            android:textColor="@color/white"
+            android:textColor="@color/background"
             android:textSize="16sp"
+            android:textStyle="bold"
             app:backgroundTint="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

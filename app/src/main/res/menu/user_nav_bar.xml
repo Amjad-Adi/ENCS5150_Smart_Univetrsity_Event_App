@@ -23,7 +23,7 @@
 
         <item
             android:id="@+id/user_nav_special"
-            android:icon="@drawable/special_section"
+            android:icon="@drawable/recommendation"
             android:title="Special Section" />
 
         <item

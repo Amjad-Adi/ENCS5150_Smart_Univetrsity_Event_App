@@ -19,69 +19,64 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.4"
-        app:shapeAppearanceOverlay="@style/CircleImageView" />
+        app:shapeAppearanceOverlay="@style/CircleImageView" /><LinearLayout
+    android:id="@+id/layout_IntroContent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="32dp"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:visibility="invisible"
+    app:layout_constraintTop_toBottomOf="@id/imageView_SplashLogo"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent">
 
-    <LinearLayout
-        android:id="@+id/layout_IntroContent"
+    <TextView
+        android:id="@+id/textView_AppTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView_SplashLogo">
+        android:gravity="center"
+        android:text="Smart Campus System"
+        android:textColor="@color/colorSecondary"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"/>
 
-        <TextView
-            android:id="@+id/textView_AppTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:text="Smart Campus System"
-            android:textAlignment="center"
-            android:textColor="@color/colorSecondary"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/textView_AppDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:lineSpacingExtra="6dp"
+        android:paddingHorizontal="12dp"
+        android:text="Your comprehensive platform for Birzeit University. Discover upcoming events, track academic schedules, and engage with campus life seamlessly."
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:alpha="0.75"/>
 
-        <TextView
-            android:id="@+id/textView_AppDesc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:alpha="0.75"
-            android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:lineSpacingExtra="6dp"
-            android:text="Your comprehensive platform for Birzeit University. Discover upcoming events, track academic schedules, and engage with campus life seamlessly."
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_Connect"
+        android:layout_width="280dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center_horizontal"
+        android:text="Connect"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:cornerRadius="12dp"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_Connect"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="48dp"
-            android:fontFamily="sans-serif-medium"
-            android:minWidth="200dp"
-            android:text="Connect"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:visibility="visible"
-            app:backgroundTint="@color/colorPrimary"
-            app:cornerRadius="8dp" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"/>
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.62" />
-    </LinearLayout>
+</LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

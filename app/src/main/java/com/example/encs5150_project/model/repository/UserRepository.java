@@ -10,12 +10,16 @@ import com.example.encs5150_project.model.entity.User;
 import com.example.encs5150_project.model.entity.UserMajor;
 import com.example.encs5150_project.model.repository.database.DataBaseHelper;
 import com.example.encs5150_project.model.repository.database.contracts.AdminContract;
+import com.example.encs5150_project.model.repository.database.contracts.EventContract;
 import com.example.encs5150_project.model.repository.database.contracts.PersonContract;
+import com.example.encs5150_project.model.repository.database.contracts.ReservationContract;
 import com.example.encs5150_project.model.repository.database.contracts.UserContract;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserRepository {
     private final DataBaseHelper dataBaseHelper;
@@ -175,4 +179,15 @@ public class UserRepository {
             cursor.close();
         }
     }
+    public int getTotalUsersCount() {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + UserContract.TABLE_NAME, null);
+        try {
+            if (cursor.moveToFirst()) return cursor.getInt(0);
+            return 0;
+        } finally {
+            cursor.close();
+        }
+    }
+
 }
