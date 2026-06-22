@@ -82,6 +82,24 @@ public class FavouriteRepository {
         }
     }
 
+    public List<Long> getFavoriteEventIds(long userId) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT " + FavouriteContract.COLUMN_EVENT_ID +
+                        " FROM " + FavouriteContract.TABLE_NAME +
+                        " WHERE " + FavouriteContract.COLUMN_USER_ID + " = ?",
+                new String[]{String.valueOf(userId)});
+        List<Long> favoriteIds = new ArrayList<>();
+        try {
+            while (cursor.moveToNext()) {
+                favoriteIds.add(cursor.getLong(0));
+            }
+            return favoriteIds;
+        } finally {
+            cursor.close();
+        }
+    }
+
     public void delete(long userId, long eventId) {
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         if (db.delete(FavouriteContract.TABLE_NAME, FavouriteContract.COLUMN_USER_ID + " = ? and " + FavouriteContract.COLUMN_EVENT_ID + " = ?", new String[]{String.valueOf(userId), String.valueOf(eventId)}) == 0)
