@@ -192,9 +192,6 @@ public class UserReservationsFragment extends Fragment {
                     case CONFIRMED:
                         tvResStatus.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.success));
                         break;
-                    case DELETED_BY_USER:
-                        tvResStatus.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.warning));
-                        break;
                     case COMPLETED:
                         tvStatusTextColorFallback(tvResStatus);
                         break;

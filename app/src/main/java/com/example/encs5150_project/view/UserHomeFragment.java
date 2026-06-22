@@ -225,10 +225,6 @@ public class UserHomeFragment extends Fragment {
                         tvResStatus.setTextColor(
                                 ContextCompat.getColor(itemView.getContext(), R.color.success));
                         break;
-                    case DELETED_BY_USER:
-                        tvResStatus.setTextColor(
-                                ContextCompat.getColor(itemView.getContext(), R.color.warning));
-                        break;
                     case COMPLETED:
                         tvResStatus.setTextColor(
                                 ContextCompat.getColor(itemView.getContext(), R.color.colorSecondary));

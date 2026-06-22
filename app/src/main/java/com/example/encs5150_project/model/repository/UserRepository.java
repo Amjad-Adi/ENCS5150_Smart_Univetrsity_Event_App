@@ -70,48 +70,6 @@ public class UserRepository {
         }
     }
 
-    public User findById(long id) {
-        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT P.*, U."+UserContract.COLUMN_MAJOR+", U."+UserContract.COLUMN_PHONE_NUMBER+", U."+UserContract.COLUMN_ACCOUNT_STATUS +
-                " FROM " + UserContract.TABLE_NAME + " U" +
-                " JOIN " + PersonContract.TABLE_NAME + " P" +
-                " ON U." + UserContract.COLUMN_ID + " = P." + PersonContract.COLUMN_ID +
-                " WHERE U." + UserContract.COLUMN_ID + " =?", new String[]{String.valueOf(id)});
-        try {
-            if(!cursor.moveToFirst()) return null;
-            User user = new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)), PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS))));
-            int picIndex = cursor.getColumnIndex(PersonContract.COLUMN_PROFILE_PICTURE_PATH);
-            if (picIndex != -1 && !cursor.isNull(picIndex)) {
-                user.setProfilePicturePath(cursor.getString(picIndex));
-            }
-            return user;
-        } finally {
-            cursor.close();
-        }
-    }
-
-    public List<User> findAll() {
-        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(
-                "SELECT P.*, U."+UserContract.COLUMN_MAJOR+", U."+UserContract.COLUMN_PHONE_NUMBER+", U."+UserContract.COLUMN_ACCOUNT_STATUS +
-                        " FROM " + UserContract.TABLE_NAME + " U " +
-                        "JOIN " + PersonContract.TABLE_NAME + " P " +
-                        "ON U." + UserContract.COLUMN_ID + " = P." + PersonContract.COLUMN_ID,null);
-        List<User> userList = new ArrayList<>();
-        try {
-            int picIndex = cursor.getColumnIndex(PersonContract.COLUMN_PROFILE_PICTURE_PATH);
-            while(cursor.moveToNext()) {
-                User user = new User(cursor.getLong(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ID)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_FIRST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_LAST_NAME)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_EMAIL)), cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_PASSWORD)),PersonGender.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(PersonContract.COLUMN_GENDER))), UserMajor.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_MAJOR))), cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_PHONE_NUMBER)), EntityStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(UserContract.COLUMN_ACCOUNT_STATUS))));
-                if (picIndex != -1 && !cursor.isNull(picIndex)) {
-                    user.setProfilePicturePath(cursor.getString(picIndex));
-                }
-                userList.add(user);
-            }
-            return userList;
-        } finally {
-            cursor.close();
-        }
-    }
 
     public void changeStatus(long id, EntityStatus status){
         SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
