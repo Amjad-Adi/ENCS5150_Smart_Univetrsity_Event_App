@@ -64,58 +64,7 @@ public class ReservationRepository {
             throw new RuntimeException("No reservation found with id " + reservation.getId());
     }
 
-    public Reservation findById(long id) {
-        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(
-                "SELECT * FROM "+ ReservationContract.TABLE_NAME +
-                        " WHERE " + ReservationContract.COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
-        try {
-            if (!cursor.moveToFirst()) return null;
-            return new Reservation(
-                    cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)),
-                    cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)),
-                    cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)),
-                    ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))),
-                    cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)),
-                    ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),
-                    cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)),
-                    parseDate(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
-            );
-        } finally {
-            cursor.close();
-        }
-    }
 
-    public List<Reservation> findAll() {
-        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM "+ ReservationContract.TABLE_NAME, null);
-        List<Reservation> reservationList = new ArrayList<>();
-        try {
-            while(cursor.moveToNext()) {
-                reservationList.add(new Reservation(
-                        cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ID)),
-                        cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_USER_ID)),
-                        cursor.getLong(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_EVENT_ID)),
-                        ReservationType.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_TYPE))),
-                        cursor.getInt(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_PARTICIPATION_COUNT)),
-                        ReservationStatus.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_STATUS))),
-                        cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_ADDITIONAL_INFO)),
-                        parseDate(cursor.getString(cursor.getColumnIndexOrThrow(ReservationContract.COLUMN_DATE)))
-                ));
-            }
-            return reservationList;
-        } finally {
-            cursor.close();
-        }
-    }
-
-    public void changeStatus(long id, ReservationStatus status) {
-        SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ReservationContract.COLUMN_STATUS, status.name());
-        if (db.update(ReservationContract.TABLE_NAME, contentValues, ReservationContract.COLUMN_ID + " = ?", new String[]{String.valueOf(id)}) == 0)
-            throw new RuntimeException("No reservation found with id " + id);
-    }
 
     public List<Reservation> search(String searchBy, boolean isAscending, String query) {
         SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
