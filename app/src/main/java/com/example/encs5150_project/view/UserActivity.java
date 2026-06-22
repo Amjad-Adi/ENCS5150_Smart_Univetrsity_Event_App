@@ -22,6 +22,7 @@ import com.example.encs5150_project.controller.UserEventController;
 import com.example.encs5150_project.controller.UserEventReserveController;
 import com.example.encs5150_project.controller.UserFavoritesController;
 import com.example.encs5150_project.controller.UserProfileController;
+import com.example.encs5150_project.controller.UserRecommendedController;
 import com.example.encs5150_project.controller.UserReservationsController;
 import com.example.encs5150_project.model.PasswordHashingAlgorithm;
 import com.example.encs5150_project.model.repository.EventRepository;
@@ -44,6 +45,7 @@ public class UserActivity extends AppCompatActivity {
     private UserEventReserveController userEventReserveController;
     private UserReservationsController userReservationsController;
     private UserFavoritesController userFavoritesController;
+    private UserRecommendedController userRecommendedController;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +86,7 @@ public class UserActivity extends AppCompatActivity {
                 } else if (itemId == R.id.user_nav_favorites) {
                     replaceFragment(new UserFavoritesFragment(), "Favorites");
                 } else if (itemId == R.id.user_nav_special) {
-                    replaceFragment(new UserSpecialSectionFragment(), "Special Section");
+                    replaceFragment(new UserRecommendedFragment(), "Recommended Events");
                 } else if (itemId == R.id.user_nav_profile) {
                     replaceFragment(new UserProfileFragment(), "Profile Management");
                 } else if (itemId == R.id.user_nav_contact) {
@@ -172,5 +174,11 @@ public class UserActivity extends AppCompatActivity {
             userFavoritesController = new UserFavoritesController(new EventRepository(DataBaseHelper.getInstance(this)),new UserRepository(DataBaseHelper.getInstance(this)),new FavouriteRepository(DataBaseHelper.getInstance(this)),SharedPrefManager.getInstance(this));
         }
         return userFavoritesController;
+    }
+    public UserRecommendedController getUserRecommendedController() {
+        if (userRecommendedController == null) {
+            userRecommendedController = new UserRecommendedController(new EventRepository(DataBaseHelper.getInstance(this)),new UserRepository(DataBaseHelper.getInstance(this)),new FavouriteRepository(DataBaseHelper.getInstance(this)),SharedPrefManager.getInstance(this));
+        }
+        return userRecommendedController;
     }
 }

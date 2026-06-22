@@ -4,6 +4,7 @@ import static com.example.encs5150_project.view.constants.Introduction.DATA_FAIL
 
 import android.database.sqlite.SQLiteException;
 
+import com.example.encs5150_project.model.config.APIServer;
 import com.example.encs5150_project.model.entity.Event;
 import com.example.encs5150_project.model.observer.APIFetchObserver;
 import com.example.encs5150_project.model.repository.EventRepository;
@@ -13,7 +14,6 @@ import com.example.encs5150_project.model.observer.FetchStatus;
 import java.util.List;
 
 public class IntroductionController implements APIFetchObserver {
-    private final String SERVER_URL="https://mocki.io/v1/624452a5-95d6-41d9-bb60-7fa2e1d2d4de";
     private final EventRepository eventRepository;
     private final FetchStatus fetchStatus;
     public IntroductionController(EventRepository eventRepository,FetchStatus fetchStatus) {
@@ -22,7 +22,7 @@ public class IntroductionController implements APIFetchObserver {
     }
     public void fetchData(){
             ConnectionAsyncTask connectionAsyncTask = new ConnectionAsyncTask(this);
-            connectionAsyncTask.execute(SERVER_URL);
+            connectionAsyncTask.execute(APIServer.SERVER_URL);
     }
     public void storeData(List<Event> list){
         for(Event event:list)
