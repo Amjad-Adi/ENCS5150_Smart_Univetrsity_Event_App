@@ -504,7 +504,16 @@ git clone <repository-url>
 5. Build and run the application on an Android device or emulator.
 
 ---
+## Recommended Environment
 
+To ensure the intended user experience and interface consistency, it is recommended to run the application with the following device settings:
+
+- **System Language:** English
+- **Appearance Mode:** Light Mode
+
+The application's layouts, icons, and visual components have been designed and tested primarily under these settings. Other configurations, such as Dark Mode or non-English system languages, are not officially supported and may affect the appearance of certain UI elements.
+
+---
 # Contributors
 
 * Amjad Adi
