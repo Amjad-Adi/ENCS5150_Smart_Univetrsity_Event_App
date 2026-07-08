@@ -1,6 +1,5 @@
 # ENCS5150_Smart_Univetrsity_Event_App
 # Smart University Events Application
-# ENCS5150 Smart University Events App
 
 A comprehensive Android application developed to simplify the management of university events, reservations, and student engagement through a centralized platform. The application provides separate interfaces for students and administrators while following a clean software architecture based on the Model–View–Controller (MVC) design pattern.
 A Java Android application for managing university events, reservations, and student engagement. The app provides separate admin and student workflows: admins manage events, users, and reservations; students discover events, reserve seats, favorite and review events, and manage their profiles.
